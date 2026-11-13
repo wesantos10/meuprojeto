@@ -250,6 +250,37 @@ section{padding:60px 0;border-top:1px solid var(--line);position:relative}
 @keyframes bfade{from{opacity:0}}
 @keyframes bgrow{from{transform:scaleY(0)}}
 .yrow .yc{text-align:right;color:var(--muted);font-weight:500}
+.wrap.wide{max-width:1480px}
+.tablebox{max-height:720px}
+.tl{display:grid;grid-template-columns:repeat(3,1.25fr) repeat(2,1fr);gap:12px;margin-top:6px}
+.tl .cy{border:1px solid var(--line);border-radius:16px;padding:16px;display:flex;flex-direction:column;gap:8px;position:relative;overflow:hidden}
+.tl .cy.f{background:linear-gradient(180deg,color-mix(in srgb,var(--accent) 7%,transparent),transparent 70%);border-color:color-mix(in srgb,var(--accent) 35%,var(--line))}
+.tl .cy .yy{font:800 26px var(--f-display);letter-spacing:-.02em}
+.tl .cy .tagy{font:600 10.5px var(--f-mono);letter-spacing:.08em;text-transform:uppercase;color:var(--accent)}
+.tl .cy .big{font:800 34px var(--f-display);letter-spacing:-.03em;line-height:1}
+.tl .cy .big small{font:500 12.5px var(--f-body);color:var(--muted);margin-left:6px;letter-spacing:0}
+.tl .cy .mini{display:flex;gap:6px;flex-wrap:wrap}
+.tl .cy .mini span{font:600 11.5px var(--f-mono);padding:3px 8px;border-radius:999px;background:color-mix(in srgb,var(--c) 16%,transparent);color:var(--ink)}
+.tl .cy .meta{font-size:13px;color:var(--muted);line-height:1.5}
+.tl .cy ol{margin:2px 0 0;padding-left:18px;font-size:12.5px;line-height:1.55;max-height:170px;overflow:auto}
+.tl .cy ol li b{font-family:var(--f-mono);font-weight:600;font-size:11.5px;color:var(--muted);margin-left:4px}
+@media (max-width:1100px){.tl{grid-template-columns:1fr 1fr}}
+@media (max-width:620px){.tl{grid-template-columns:1fr}}
+.xgrid{display:grid;grid-template-columns:2.4fr 1fr;gap:16px;align-items:start}
+.xgrid .xt{max-height:none}
+.xgrid .xt td,.xgrid .xt th{text-align:center;padding:9px 12px;white-space:nowrap}
+.xgrid .xt td:first-child,.xgrid .xt th:first-child{text-align:left}
+.xgrid .xt tr.sep td{background:color-mix(in srgb,var(--accent) 6%,transparent);font:600 11px var(--f-mono);letter-spacing:.06em;text-transform:uppercase;color:var(--accent)}
+.mov{display:grid;gap:10px}
+.mov .mb{border:1px solid var(--line);border-radius:14px;padding:12px 14px}
+.mov .mb .k{font:600 11px var(--f-mono);letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.mov .mb .v{font:800 24px var(--f-display)}
+.mov details{font-size:12.5px;color:var(--muted);margin-top:4px}
+.mov details summary{cursor:pointer;color:var(--accent);font-weight:600}
+.mov details ul{margin:6px 0 0;padding-left:18px;line-height:1.5;max-height:180px;overflow:auto}
+.obs{margin:16px 0 0;padding-left:18px;font-size:13.5px;color:var(--muted);line-height:1.6}
+.obs b{color:var(--ink)}
+@media (max-width:960px){.xgrid{grid-template-columns:1fr}}
 .proj{display:grid;gap:12px}
 .proj .pr{display:grid;grid-template-columns:56px 1fr 1fr;gap:10px;align-items:center;padding:12px 14px;border:1px solid var(--line);border-radius:14px}
 .proj .pr.h{border:0;padding:0 14px;font:600 11.5px var(--f-mono);letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
@@ -436,22 +467,36 @@ footer .fine{color:var(--muted);font-size:13px;max-width:50ch}
 </section>
 
 <section id="base">
-  <div class="wrap">
+  <div class="wrap wide">
     <div class="sec-head reveal">
       <div><div class="tag"><i></i>Base ativa de clientes</div><h2 id="bTitle">Evolução da base ativa Workcenter, 2022 a 2026</h2></div>
       <p>Desempenho das <span id="bN">131</span> entidades da carteira ativa da Workcenter em cada ciclo do Programa Nacional de Transparência Pública, conforme os resultados publicados no Radar da Transparência.</p>
     </div>
     <div class="cmp-top" id="bTop"></div>
+    <div class="card reveal" style="margin-top:14px">
+      <h3>Linha do tempo dos ciclos do PNTP</h3>
+      <p class="sub">Resultado da base ativa em cada ciclo. Os ciclos de 2022 a 2024 marcam a construção da base certificada: nesses anos estão as primeiras certificações da carteira.</p>
+      <div class="tl" id="bTL"></div>
+    </div>
+    <div class="card reveal" style="margin-top:14px">
+      <h3>Conferência entre as planilhas oficiais do PNTP e o Radar da Transparência</h3>
+      <p class="sub">As listas de avaliações de 2023, 2024 e 2025 publicadas pelo Programa trazem uma aba específica com as entidades da Workcenter. Os resultados dessa aba foram confrontados com o Radar, entidade por entidade.</p>
+      <div class="xgrid">
+        <div class="tablebox xt"><table class="btab" id="bXT"></table></div>
+        <div id="bMov"></div>
+      </div>
+      <ul class="obs" id="bObs"></ul>
+    </div>
     <div class="grid2" style="margin-top:14px">
       <div class="card reveal">
         <h3>Entidades certificadas por ciclo e perspectiva até 2029</h3>
-        <p class="sub" id="bChartSub">Selos Diamante, Ouro e Prata de 2022 a 2026. De 2027 a 2029, faixa estimada entre os cenários de manutenção e tendencial.</p>
+        <p class="sub" id="bChartSub">Selos Diamante, Ouro e Prata de 2022 a 2026. De 2027 a 2029, faixa estimada entre os cenários conservador e tendencial, com a base projetada em crescimento.</p>
         <div id="bChart"></div>
         <div class="legend" style="margin-top:8px"><span><i style="background:var(--diamante)"></i>Diamante</span><span><i style="background:var(--ouro)"></i>Ouro</span><span><i style="background:var(--prata)"></i>Prata</span><span><i style="background:none;border:1.5px dashed var(--accent)"></i>Perspectiva</span></div>
       </div>
       <div class="card reveal">
         <h3>Perspectiva para os próximos três ciclos</h3>
-        <p class="sub">Estimativas para a base ativa, sem considerar a entrada de novos clientes</p>
+        <p class="sub">Estimativas que consideram a entrada e a saída de clientes observadas e o ritmo de certificação da base</p>
         <div id="bProj"></div>
       </div>
     </div>
@@ -464,6 +509,8 @@ footer .fine{color:var(--muted);font-size:13px;max-width:50ch}
       <div class="card reveal"><h3>Situação da base em 2026</h3><p class="sub">Clique em uma situação para filtrar a relação de entidades</p><ul class="flowlist" id="bSit"></ul></div>
       <div class="card reveal"><h3>Trajetória das entidades certificadas em 2026</h3><p class="sub">Primeiro ciclo em que cada entidade certificada em 2026 obteve selo</p><div id="bFirst"></div></div>
     </div>
+  </div>
+  <div class="wrap wide">
     <div class="controls" style="margin-top:18px">
       <select id="bfS" aria-label="Situação em 2026"></select>
       <div class="seg" role="group" aria-label="Estado" id="bUF"><button data-v="" aria-pressed="true">PI + MA</button><button data-v="PI" aria-pressed="false">Piauí</button><button data-v="MA" aria-pressed="false">Maranhão</button></div>
@@ -515,7 +562,7 @@ footer .fine{color:var(--muted);font-size:13px;max-width:50ch}
 </section>
 
 <section id="entidades">
-  <div class="wrap">
+  <div class="wrap wide">
     <div class="sec-head reveal">
       <h2>Todas as entidades</h2>
       <p>Filtre por empresa, estado, poder e selo. Clique no título de uma coluna para ordenar.</p>
@@ -572,7 +619,7 @@ footer .fine{color:var(--muted);font-size:13px;max-width:50ch}
       <p class="fine" style="margin-top:12px">Levantamento feito em novembro de 2026 a partir de dados públicos do Radar da Transparência. Os índices são os do ciclo 2026 publicados no painel.</p>
     </div>
     <div><h4>Seções</h4><ul><li><a href="#diamante">Vitrine</a></li><li><a href="#painel">Painel</a></li><li><a href="#comparativo">2025 × 2026</a></li><li><a href="#entidades">Entidades</a></li></ul></div>
-    <div><h4>Fontes</h4><ul><li><a href="https://radardatransparencia.atricon.org.br/painel-6/">Radar da Transparência · Painel 6</a></li><li><a href="https://radardatransparencia.atricon.org.br/">Radar da Transparência</a></li></ul></div>
+    <div><h4>Fontes</h4><ul><li><a href="https://radardatransparencia.atricon.org.br/painel-6/">Radar da Transparência · Painel 6</a></li><li><a href="https://radardatransparencia.atricon.org.br/">Radar da Transparência</a></li><li>Listas de avaliações do PNTP 2023, 2024 e 2025 (aba Workcenter)</li></ul></div>
   </div>
 </footer>
 
@@ -840,16 +887,10 @@ const BS={s:"",uf:"",p:"",q:"",k:"4",dir:-1};
   const cert=i=>cnt(i,CERT), lvl=(i,l)=>cnt(i,y=>CERT(y)&&y[1]===l);
   const avgI=i=>{const g=BASE.map(r=>r.y[i]).filter(y=>y&&y[1]!=="Não Avaliado");return avg(g.map(y=>y[0]))};
   const nMA=BASE.filter(r=>r.uf==="MA").length, nPI=BASE.length-nMA;
-  // projeções
-  const S=["Diamante","Ouro","Prata","N"], st=y=>CERT(y)?y[1]:"N";
-  const trans=(a,b)=>{const m={};S.forEach(s=>{m[s]={};S.forEach(x=>m[s][x]=0)});BASE.forEach(r=>m[st(r.y[a])][st(r.y[b])]++);
-    S.forEach(s=>{const tot=S.reduce((u,x)=>u+m[s][x],0);S.forEach(x=>m[s][x]=tot?m[s][x]/tot:(s===x?1:0))});return m};
-  const A=trans(2,3),B=trans(3,4),Mx={};S.forEach(s=>{Mx[s]={};S.forEach(x=>Mx[s][x]=(A[s][x]+B[s][x])/2)});
-  let v={};S.forEach(s=>v[s]=BASE.filter(r=>st(r.y[4])===s).length);
-  const cons=[];for(let k=0;k<3;k++){const n={};S.forEach(x=>n[x]=S.reduce((u,s)=>u+v[s]*Mx[s][x],0));v=n;cons.push({c:n.Diamante+n.Ouro+n.Prata,d:n.Diamante})}
-  const slopeC=(cert(4)-cert(1))/3, slopeD=(lvl(4,"Diamante")-lvl(2,"Diamante"))/2, cap=BASE.filter(r=>r.reg).length;
-  const tend=[1,2,3].map(k=>({c:Math.min(cap,cert(4)+slopeC*k),d:Math.min(cap,lvl(4,"Diamante")+slopeD*k)}));
-  const P=[2027,2028,2029].map((y,k)=>({y,lo:Math.round(Math.min(cons[k].c,tend[k].c)),hi:Math.round(Math.max(cons[k].c,tend[k].c)),dlo:Math.round(Math.min(cons[k].d,tend[k].d)),dhi:Math.round(Math.max(cons[k].d,tend[k].d))}));
+  // projeções (calculadas a partir da movimentação de clientes e das transições entre selos)
+  const PJ={"cons": [{"N": 146, "c": 52, "d": 11, "o": 22, "p": 20, "r": 0.3577077645753261}, {"N": 161, "c": 58, "d": 12, "o": 24, "p": 21, "r": 0.36275502714513735}, {"N": 174, "c": 64, "d": 14, "o": 27, "p": 23, "r": 0.36874919576604626}], "tend": [{"N": 146, "c": 62, "d": 11, "o": 26, "p": 25, "r": 0.42529810800380136}, {"N": 161, "c": 71, "d": 13, "o": 30, "p": 28, "r": 0.4445550224404959}, {"N": 174, "c": 79, "d": 15, "o": 34, "p": 31, "r": 0.45626505262166406}], "ex": 0.05217391304347826, "ent": 22, "saidas": 6, "ent_cert": 3, "kept": 109, "kept_c25": 31, "kept_c26": 48, "v0": {"Diamante": 8, "Ouro": 21, "Prata": 22, "N": 80}}, XL={"anos": [{"y": 2023, "n": 115, "av": 62, "c": 2, "d": 0, "o": 0, "p": 2, "m": 0.5338483870967742}, {"y": 2024, "n": 115, "av": 81, "c": 16, "d": 0, "o": 12, "p": 4, "m": 0.6391444444444444}, {"y": 2025, "n": 115, "av": 103, "c": 31, "d": 3, "o": 15, "p": 13, "m": 0.6802019417475729}], "entradas": ["Câmara Municipal de Apicum-Açu", "Câmara Municipal de Guimarães", "Câmara Municipal de Igarapé do Meio", "Câmara Municipal de Juazeiro do Piauí", "Câmara Municipal de Lagoinha do Piauí", "Câmara Municipal de Passagem Franca do Piauí", "Câmara Municipal de Sigefredo Pacheco", "Câmara Municipal de São Bernardo", "Prefeitura Municipal de Araioses", "Prefeitura Municipal de Avelino Lopes", "Prefeitura Municipal de Buriti dos Lopes", "Prefeitura Municipal de Joaquim Pires", "Prefeitura Municipal de Juazeiro do Piauí", "Prefeitura Municipal de Magalhães de Almeida", "Prefeitura Municipal de Nina Rodrigues", "Prefeitura Municipal de Paulino Neves", "Prefeitura Municipal de Pinheiro", "Prefeitura Municipal de Santa Filomena", "Prefeitura Municipal de Santa Quitéria do Maranhão", "Prefeitura Municipal de São Bernardo", "Prefeitura Municipal de Vila Nova do Piauí", "Prefeitura Municipal de Vila Nova dos Martírios"], "saidas": ["Câmara Municipal de Brejo de Areia", "Câmara Municipal de São Félix de Balsas", "Câmara Municipal de São João Batista", "Prefeitura Municipal de Alto Alegre do Maranhão", "Prefeitura Municipal de Nova Colinas", "Prefeitura Municipal de Senador Alexandre Costa"], "comuns": 109};
+  const P=[2027,2028,2029].map((y,k)=>{const a=PJ.cons[k],b=PJ.tend[k];return {y,N:a.N,lo:Math.min(a.c,b.c),hi:Math.max(a.c,b.c),dlo:Math.min(a.d,b.d),dhi:Math.max(a.d,b.d),rlo:Math.min(a.r,b.r),rhi:Math.max(a.r,b.r)}});
+  const cap=Math.ceil((Math.max(...P.map(p=>p.hi))+8)/20)*20;
   window.__BP=P;
   // KPIs
   const box=(k,a,b,ex,hl)=>`<div class="cmp ${hl?"hl":""}"><div class="k">${k}</div><div class="ft"><span class="from num">${a}</span><span class="arrow">→</span><span class="to num">${b}</span></div>${ex}</div>`;
@@ -876,10 +917,44 @@ const BS={s:"",uf:"",p:"",q:"",k:"4",dir:-1};
     s+=`<line x1="${(x(4)+x(5))/2}" x2="${(x(4)+x(5))/2}" y1="${T-6}" y2="${H-Bm}" stroke="var(--muted)" stroke-dasharray="2 4"/>`;
     $("bChart").innerHTML=s+"</svg>";
   })();
-  $("bProj").innerHTML=`<div class="proj"><div class="pr h"><span>Ciclo</span><span>Certificadas</span><span>Selo Diamante</span></div>
-    <div class="pr"><span class="yr">2026</span><span class="v num">${cert(4)}<small>resultado</small></span><span class="v dia num">${lvl(4,"Diamante")}<small>resultado</small></span></div>
-    ${P.map(p=>`<div class="pr"><span class="yr">${p.y}</span><span class="v num">${p.lo}–${p.hi}<small>${fmt(p.lo/BASE.length,0)}–${fmt(p.hi/BASE.length,0)}%</small></span><span class="v dia num">${p.dlo}–${p.dhi}</span></div>`).join("")}</div>
-    <p class="method-note"><b>Metodologia.</b> O limite inferior (cenário de manutenção) aplica à base as taxas médias de transição entre selos observadas de 2024 para 2025 e de 2025 para 2026. O limite superior (cenário tendencial) mantém o ritmo médio de crescimento de 2023 a 2026, de ${slopeC.toLocaleString("pt-BR",{maximumFractionDigits:1})} entidades certificadas por ciclo, limitado ao total da base. As estimativas têm caráter indicativo e não consideram mudanças de critérios do Programa nem a entrada de novos clientes.</p>`;
+  const pct=v=>(v*100).toLocaleString("pt-BR",{maximumFractionDigits:0})+"%";
+  $("bProj").innerHTML=`<div class="proj"><div class="pr h" style="grid-template-columns:56px .8fr 1.2fr 1fr"><span>Ciclo</span><span>Base</span><span>Certificadas</span><span>Diamante</span></div>
+    <div class="pr" style="grid-template-columns:56px .8fr 1.2fr 1fr"><span class="yr">2026</span><span class="v num">${BASE.length}</span><span class="v num">${cert(4)}<small>${pct(cert(4)/BASE.length)}</small></span><span class="v dia num">${lvl(4,"Diamante")}</span></div>
+    ${P.map(p=>`<div class="pr" style="grid-template-columns:56px .8fr 1.2fr 1fr"><span class="yr">${p.y}</span><span class="v num">≈${p.N}</span><span class="v num">${p.lo}–${p.hi}<small>${pct(p.rlo)}–${pct(p.rhi)}</small></span><span class="v dia num">${p.dlo===p.dhi?p.dlo:p.dlo+"–"+p.dhi}</span></div>`).join("")}</div>
+    <p class="method-note"><b>Metodologia.</b> A base é projetada com a movimentação observada entre as planilhas de 2025 e a carteira de 2026: entrada de ${PJ.ent} entidades por ciclo e saída de ${pct(PJ.ex)} da base. As novas entidades ingressam com o desempenho observado nas que entraram em 2026 (${PJ.ent_cert} de ${PJ.ent} certificadas no primeiro ciclo). Para as entidades já atendidas, o cenário conservador aplica a média das transições entre selos de 2024→2025 e 2025→2026; o cenário tendencial aplica as transições de 2025→2026, ciclo em que as entidades certificadas da carteira passaram de ${PJ.kept_c25} para ${PJ.kept_c26}. As estimativas têm caráter indicativo e não consideram alterações nos critérios do Programa.</p>`;
+  // linha do tempo dos ciclos
+  const certList=i=>BASE.filter(r=>CERT(r.y[i])).sort((a,b)=>b.y[i][0]-a.y[i][0]);
+  const NOTE={2022:"Primeiro ciclo do Programa. As planilhas da Workcenter não cobrem este ano; os dados vêm exclusivamente do Radar.",
+    2023:"O índice médio da base recuou em relação a 2022 e apenas duas entidades obtiveram selo.",
+    2024:"Retomada: a base passa de 2 para 14 entidades certificadas, com o selo Ouro predominante.",
+    2025:"Primeiros selos Diamante da carteira e mais que o dobro de certificações em relação a 2024.",
+    2026:"Melhor resultado da série, com a maior quantidade de entidades certificadas e de selos Diamante."};
+  $("bTL").innerHTML=YRS.map((yr,i)=>{const L=certList(i), f=i<=2, ev=cnt(i,y=>y&&y[1]!=="Não Avaliado");
+    const pills=["Diamante","Ouro","Prata"].map(l=>`<span style="--c:${LVC[l]}">${lvl(i,l)} ${l}</span>`).join("");
+    const names=(f||yr===2025)?L.filter(r=>f||r.y[i][1]==="Diamante"):L.filter(r=>r.y[i][1]==="Diamante");
+    return `<div class="cy ${f?"f":""}"><span class="tagy">${f?"Ciclo de formação da base":"Ciclo de consolidação"}</span><span class="yy">${yr}</span>
+      <span class="big num">${L.length}<small>certificadas de ${ev} avaliadas</small></span><div class="mini">${pills}</div>
+      <span class="meta">Índice médio de ${fmt(avgI(i))}%. ${NOTE[yr]}</span>
+      ${names.length?`<span class="meta"><b>${f?"Entidades certificadas":"Selo Diamante"}</b></span><ol>${names.map(r=>`<li>${esc(r.n)} <b>${r.uf} · ${fmt(r.y[i][0],1)}%</b></li>`).join("")}</ol>`:""}</div>`}).join("");
+  // conferência planilhas × Radar
+  const radarRow=i=>({av:cnt(i,y=>y&&y[1]!=="Não Avaliado"),c:cert(i),d:lvl(i,"Diamante"),o:lvl(i,"Ouro"),p:lvl(i,"Prata"),m:avgI(i)});
+  const tr=(lab,r)=>`<tr><td>${lab}</td><td>${r.av}</td><td><b>${r.c}</b></td><td>${r.d}</td><td>${r.o}</td><td>${r.p}</td><td>${fmt(r.m)}%</td></tr>`;
+  $("bXT").innerHTML=`<thead><tr><th>Ciclo e fonte</th><th>Avaliadas</th><th>Certificadas</th><th>Diamante</th><th>Ouro</th><th>Prata</th><th>Índice médio</th></tr></thead><tbody>`+
+    YRS.map((yr,i)=>{const x=XL.anos.find(a=>a.y===yr);
+      return `<tr class="sep"><td colspan="7">${yr}</td></tr>`+(x?tr(`Planilha PNTP · aba Workcenter (${x.n})`,x):`<tr><td colspan="7" style="color:var(--muted);text-align:left">Planilha PNTP · aba Workcenter: não disponível para ${yr}</td></tr>`)+tr(`Radar · base ativa (${BASE.length})`,radarRow(i))}).join("")+`</tbody>`;
+  const li=a=>`<ul>${a.map(n=>`<li>${esc(n)}</li>`).join("")}</ul>`;
+  $("bMov").innerHTML=`<div class="mov">
+    <div class="mb"><div class="k">Planilhas 2023–2025</div><div class="v num">${XL.anos[0].n} entidades</div></div>
+    <div class="mb"><div class="k">Presentes nas duas bases</div><div class="v num">${XL.comuns}</div><details><summary>Resultados idênticos nas duas fontes</summary><p>Para as ${XL.comuns} entidades comuns, nível, índice e certificação de 2023, 2024 e 2025 coincidem entre as planilhas e o Radar.</p></details></div>
+    <div class="mb"><div class="k">Ingressaram na carteira em 2026</div><div class="v num" style="color:var(--accent)">+${XL.entradas.length}</div><details><summary>Ver entidades</summary>${li(XL.entradas)}</details></div>
+    <div class="mb"><div class="k">Deixaram a carteira</div><div class="v num">−${XL.saidas.length}</div><details><summary>Ver entidades</summary>${li(XL.saidas)}</details></div></div>`;
+  $("bObs").innerHTML=[
+    `<b>Ano de 2022.</b> As planilhas oficiais com a aba da Workcenter abrangem apenas 2023, 2024 e 2025. Os resultados de 2022 foram obtidos exclusivamente no Radar da Transparência.`,
+    `<b>Diferença em 2024.</b> A planilha registra ${XL.anos[1].c} entidades certificadas e o Radar registra ${cert(2)} na base ativa, porque duas entidades certificadas naquele ano (Câmara Municipal de São Félix de Balsas e Câmara Municipal de São João Batista) não integram mais a carteira.`,
+    `<b>Novos clientes.</b> As ${XL.entradas.length} entidades que ingressaram em 2026 não constavam da aba Workcenter das planilhas de 2023 a 2025. Seus resultados nesses ciclos, extraídos do Radar, referem-se ao período anterior ao atendimento pela Workcenter.`,
+    `<b>Prefeitura Municipal de Alto Alegre do Pindaré.</b> Mantida na base por ter sido atendida pela Workcenter até a autoavaliação de 2026.`,
+    `<b>Prefeitura Municipal de Nova Colinas.</b> Excluída da base ativa: obteve o selo Diamante em 2026 com outra empresa.`
+  ].map(s=>`<li>${s}</li>`).join("");
   // distribuição por nível
   $("bYears").innerHTML=YRS.map((yr,i)=>{const c={};BASE.forEach(r=>{const l=r.y[i]?r.y[i][1]:"Não Avaliado";c[l]=(c[l]||0)+1});
     return `<div class="yrow"><span>${yr}</span><span class="ystack">${LVO.filter(l=>c[l]).map(l=>`<b style="flex-grow:${c[l]};background:${LVC[l]}" data-tip="${yr} · ${c[l]} ${l}${l==="Não Avaliado"?" ou sem avaliação":""}"></b>`).join("")}</span><span class="yc">${cert(i)} cert.</span></div>`}).join("")+
