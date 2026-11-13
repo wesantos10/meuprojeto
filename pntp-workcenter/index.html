@@ -53,7 +53,7 @@ nav{position:sticky;top:0;z-index:20;background:color-mix(in srgb,var(--paper) 8
 nav .wrap{display:flex;align-items:center;gap:18px;height:64px}
 .brand{display:flex;align-items:center;gap:10px;font:800 19px var(--f-display);letter-spacing:-.02em;text-decoration:none;color:var(--ink);white-space:nowrap}
 .tierbar{margin-left:auto;display:flex;gap:4px;padding:4px;border-radius:999px;background:var(--panel);border:1px solid var(--line);position:relative}
-.tierbar .glider{position:absolute;top:4px;bottom:4px;border-radius:999px;background:var(--ink);transition:left .45s cubic-bezier(.3,1.4,.5,1),width .45s cubic-bezier(.3,1.4,.5,1),background .3s;z-index:0}
+.tierbar .glider{position:absolute;top:4px;bottom:4px;border-radius:999px;background:var(--ink);transition:left .6s cubic-bezier(.4,0,.2,1),width .6s cubic-bezier(.4,0,.2,1),background .6s ease;z-index:0}
 .tierbar button{position:relative;z-index:1;border:0;background:none;font:600 13.5px var(--f-body);color:var(--muted);padding:7px 14px;border-radius:999px;cursor:pointer;display:flex;gap:7px;align-items:center;transition:color .25s;white-space:nowrap}
 .tierbar button i{width:9px;height:9px;border-radius:50%}
 .tierbar button[aria-pressed="true"]{color:var(--paper)}
@@ -68,7 +68,7 @@ nav .wrap{display:flex;align-items:center;gap:18px;height:64px}
 /* HERO */
 .hero{position:relative;padding:58px 0 46px;overflow:hidden}
 .hero::before{content:"";position:absolute;inset:-40% -10% auto auto;width:780px;height:780px;border-radius:50%;
-  background:radial-gradient(circle,color-mix(in srgb,var(--tc,var(--accent)) 22%,transparent),transparent 62%);transition:background .6s;pointer-events:none;animation:breathe 9s ease-in-out infinite}
+  background:radial-gradient(circle,color-mix(in srgb,var(--tc,var(--accent)) 22%,transparent),transparent 62%);transition:background .6s;pointer-events:none;animation:breathe 16s ease-in-out infinite}
 @keyframes breathe{50%{transform:scale(1.08) translate(-2%,3%)}}
 .hero .wrap{position:relative;display:grid;grid-template-columns:1.2fr .95fr;gap:36px;align-items:center}
 .eyebrow{font:600 12px/1 var(--f-mono);letter-spacing:.14em;text-transform:uppercase;color:var(--muted);display:flex;gap:10px;align-items:center}
@@ -78,8 +78,8 @@ nav .wrap{display:flex;align-items:center;gap:18px;height:64px}
 @keyframes flow{to{background-position:300% 0}}
 .lede{font-size:19px;color:var(--muted);max-width:56ch;margin:0}
 .chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:26px}
-.chip{display:inline-flex;align-items:center;gap:8px;padding:9px 14px;border-radius:999px;border:1px solid var(--line);background:var(--panel);font:600 14px var(--f-body);color:var(--ink);cursor:pointer;transition:transform .25s cubic-bezier(.3,1.5,.5,1),border-color .25s,box-shadow .25s}
-.chip:hover{transform:translateY(-2px)}
+.chip{display:inline-flex;align-items:center;gap:8px;padding:9px 14px;border-radius:999px;border:1px solid var(--line);background:var(--panel);font:600 14px var(--f-body);color:var(--ink);cursor:pointer;transition:transform .5s cubic-bezier(.4,0,.2,1),border-color .5s ease,box-shadow .5s ease}
+.chip:hover{transform:translateY(-1px)}
 .chip i{width:11px;height:11px;border-radius:50%}
 .chip[aria-pressed="true"]{border-color:var(--tc);box-shadow:0 0 0 3px color-mix(in srgb,var(--tc) 25%,transparent)}
 .chip.static{cursor:default}.chip.static:hover{transform:none}
@@ -93,15 +93,14 @@ nav .wrap{display:flex;align-items:center;gap:18px;height:64px}
 .seal .big{font:800 clamp(84px,11vw,138px)/.9 var(--f-display);letter-spacing:-.05em;color:var(--tc,var(--ink));transition:color .4s}
 .seal .cap{font-size:13.5px;color:var(--muted);max-width:19ch;margin:8px auto 0;min-height:3em}
 .seal .logo-mark{width:46px;margin:0 auto 6px;filter:drop-shadow(0 4px 10px color-mix(in srgb,var(--accent) 35%,transparent))}
-.arc{cursor:pointer;transition:stroke-width .35s cubic-bezier(.3,1.5,.5,1),opacity .35s;stroke-linecap:round}
-.arc:hover{stroke-width:34}
-.seal.has-sel .arc{opacity:.22}.seal.has-sel .arc.sel{opacity:1;stroke-width:34}
+.arc{cursor:pointer;transition:stroke-width .7s cubic-bezier(.4,0,.2,1),opacity .7s ease;stroke-linecap:round;outline:none}
+.arc:focus{outline:none}.arc:focus-visible{stroke-width:32}
+[tabindex]:focus:not(:focus-visible),button:focus:not(:focus-visible){outline:none}
+svg :focus{outline:none}
+.arc:hover{stroke-width:30}
+.seal.has-sel .arc{opacity:.25}.seal.has-sel .arc.sel{opacity:1;stroke-width:32}
 @keyframes draw{from{stroke-dashoffset:var(--len)}to{stroke-dashoffset:0}}
-.arc{animation:draw 1.2s cubic-bezier(.2,.7,.2,1) both}
-.orbit circle{animation:pulse 2.4s ease-in-out infinite}
-.orbit circle:nth-child(2){animation-delay:.4s}.orbit circle:nth-child(3){animation-delay:.8s}
-@keyframes pulse{50%{transform:scale(1.5);opacity:.5}}
-.orbit circle{transform-box:fill-box;transform-origin:center}
+.arc{animation:draw 1.8s cubic-bezier(.4,0,.2,1) both}
 
 /* SECTIONS */
 section{padding:60px 0;border-top:1px solid var(--line);position:relative}
@@ -112,31 +111,31 @@ section{padding:60px 0;border-top:1px solid var(--line);position:relative}
 .tag i{width:8px;height:8px;border-radius:50%;background:var(--tc,var(--accent))}
 
 /* reveal: o conteúdo já está visível; só desliza levemente */
-.reveal{transform:translateY(22px);transition:transform .8s cubic-bezier(.2,.7,.2,1)}
+.reveal{transform:translateY(14px);transition:transform 1.1s cubic-bezier(.4,0,.2,1)}
 .reveal.in{transform:none}
-.flash{animation:flash .6s cubic-bezier(.3,1.5,.5,1)}
-@keyframes flash{0%{transform:scale(.96)}60%{transform:scale(1.02)}100%{transform:none}}
+.flash{animation:flash 1s ease}
+@keyframes flash{from{opacity:.55}to{opacity:1}}
 
 /* VITRINE DIAMANTE */
 .showcase{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
-.gem{position:relative;background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:18px;overflow:hidden;transition:transform .35s cubic-bezier(.3,1.4,.5,1),box-shadow .35s;transform-style:preserve-3d}
-.gem:hover{transform:translateY(-5px) rotateX(3deg);box-shadow:0 18px 40px -18px color-mix(in srgb,var(--tc) 60%,transparent)}
+.gem{position:relative;background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:18px;overflow:hidden;transition:transform .6s cubic-bezier(.4,0,.2,1),box-shadow .6s ease}
+.gem:hover{transform:translateY(-3px);box-shadow:0 18px 40px -18px color-mix(in srgb,var(--tc) 60%,transparent)}
 .gem::before{content:"";position:absolute;inset:0;border-radius:inherit;padding:1.5px;background:linear-gradient(120deg,transparent 30%,var(--tc) 50%,transparent 70%);background-size:250% 250%;
-  -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask-composite:exclude;animation:sheen 4s linear infinite;pointer-events:none}
+  -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask-composite:exclude;animation:sheen 8s linear infinite;pointer-events:none}
 @keyframes sheen{to{background-position:-250% 0}}
 .gem .grk{font:600 12px var(--f-mono);color:var(--muted)}
 .gem .gv{font:800 40px/1 var(--f-display);letter-spacing:-.03em;margin:6px 0 4px;color:var(--tc)}
 .gem .gn{font-weight:700;font-size:15px;line-height:1.3}
 .gem .gm{font-size:13px;color:var(--muted);margin-top:4px}
 .gem svg{margin-top:10px}
-.gem.enter{animation:gemIn .6s cubic-bezier(.2,.8,.2,1.2) both}
-@keyframes gemIn{from{transform:translateY(16px) scale(.96)}}
+.gem.enter{animation:gemIn .9s cubic-bezier(.4,0,.2,1) both}
+@keyframes gemIn{from{opacity:.35;transform:translateY(8px)}}
 .more{margin-top:14px;color:var(--muted);font-size:14px}
 
 /* BENTO */
 .bento{display:grid;grid-template-columns:repeat(6,1fr);grid-auto-rows:minmax(150px,auto);gap:14px}
-.tile{background:var(--panel);border:1px solid var(--line);border-radius:20px;padding:22px;display:flex;flex-direction:column;gap:8px;transition:transform .3s cubic-bezier(.3,1.4,.5,1),border-color .3s,box-shadow .3s;position:relative;overflow:hidden}
-.tile:hover{transform:translateY(-4px);border-color:color-mix(in srgb,var(--accent) 40%,var(--line));box-shadow:0 16px 36px -22px color-mix(in srgb,var(--accent) 70%,transparent)}
+.tile{background:var(--panel);border:1px solid var(--line);border-radius:20px;padding:22px;display:flex;flex-direction:column;gap:8px;transition:transform .6s cubic-bezier(.4,0,.2,1),border-color .6s ease,box-shadow .6s ease;position:relative;overflow:hidden}
+.tile:hover{transform:translateY(-2px);border-color:color-mix(in srgb,var(--accent) 40%,var(--line));box-shadow:0 16px 36px -22px color-mix(in srgb,var(--accent) 70%,transparent)}
 .tile .k{font:600 12px/1.3 var(--f-mono);letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
 .tile .v{font:800 48px/1 var(--f-display);letter-spacing:-.03em}
 .tile .v small{font-size:19px;font-weight:600;color:var(--muted);letter-spacing:0}
@@ -150,9 +149,9 @@ section{padding:60px 0;border-top:1px solid var(--line);position:relative}
 .ufbar{display:flex;flex-direction:column;gap:14px;margin-top:auto}
 .ufrow .lab{display:flex;justify-content:space-between;font-size:14px;margin-bottom:6px}
 .track{height:12px;border-radius:999px;background:rgba(255,255,255,.2);overflow:hidden}
-.track b{display:block;height:100%;background:#fff;border-radius:999px;transition:width 1s cubic-bezier(.2,.8,.2,1)}
+.track b{display:block;height:100%;background:#fff;border-radius:999px;transition:width 1s cubic-bezier(.4,0,.2,1)}
 .tiers{display:flex;gap:5px;margin-top:auto;height:14px}
-.tiers span{border-radius:999px;transition:flex-grow .8s cubic-bezier(.2,.8,.2,1),opacity .3s;cursor:pointer}
+.tiers span{border-radius:999px;transition:flex-grow .8s cubic-bezier(.4,0,.2,1),opacity .3s;cursor:pointer}
 .tiers span.dim{opacity:.2}
 
 /* COMPARATIVO */
@@ -181,9 +180,9 @@ section{padding:60px 0;border-top:1px solid var(--line);position:relative}
 .pair .t{font-weight:600;font-size:14px;grid-row:span 2;display:flex;align-items:center;gap:8px}
 .pair .t i{width:10px;height:10px;border-radius:3px}
 .pb{display:flex;align-items:center;gap:8px;font:600 13px var(--f-mono);color:var(--muted);white-space:nowrap}
-.pb b{height:14px;border-radius:4px;display:block;width:0;transition:width 1.1s cubic-bezier(.2,.8,.2,1)}
+.pb b{height:14px;border-radius:4px;display:block;width:0;transition:width 1.1s cubic-bezier(.4,0,.2,1)}
 .flowbar{display:flex;height:44px;border-radius:12px;overflow:hidden;gap:3px;margin:6px 0 16px}
-.flowbar span{display:grid;place-items:center;color:#fff;font:600 14px var(--f-mono);transition:flex-grow 1s cubic-bezier(.2,.8,.2,1)}
+.flowbar span{display:grid;place-items:center;color:#fff;font:600 14px var(--f-mono);transition:flex-grow 1s cubic-bezier(.4,0,.2,1)}
 .flowlist{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:10px;font-size:14.5px}
 .flowlist li{display:flex;gap:10px;align-items:flex-start}
 .flowlist i{width:12px;height:12px;border-radius:3px;margin-top:5px;flex:none}
@@ -195,6 +194,30 @@ section{padding:60px 0;border-top:1px solid var(--line);position:relative}
 .moves .dv{font:600 13px var(--f-mono);grid-row:span 2;align-self:center}
 .empty{color:var(--muted);font-size:14px;padding:10px 0}
 
+/* DUMBBELL 2025 x 2026 */
+.db-head{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;flex-wrap:wrap}
+.db-legend{margin:4px 0 12px}
+.db{display:flex;flex-direction:column;max-height:620px;overflow:auto;padding-right:4px}
+.db-axis,.db-row{display:grid;grid-template-columns:minmax(150px,280px) 1fr 74px;gap:14px;align-items:center}
+.db-axis{position:sticky;top:0;background:var(--panel);z-index:2;padding:4px 0 8px;font:600 11px var(--f-mono);color:var(--muted)}
+.db-axis .scale{position:relative;height:16px}
+.db-axis .scale span{position:absolute;transform:translateX(-50%)}
+.db-row{padding:7px 0;border-bottom:1px solid color-mix(in srgb,var(--line) 70%,transparent);transition:opacity .8s ease,background .4s ease}
+.db-row:hover{background:var(--accent-soft)}
+.db-row .dn{font-size:13.5px;font-weight:600;line-height:1.25}
+.db-row .dn small{display:block;font:500 11.5px var(--f-mono);color:var(--muted)}
+.db-row .tr{position:relative;height:20px}
+.db-row .tr .th{position:absolute;top:0;bottom:0;width:1px;background:var(--line)}
+.db-row .tr .th.dia{background:color-mix(in srgb,var(--diamante) 60%,transparent);width:2px}
+.db-row .seg2{position:absolute;top:8px;height:4px;border-radius:999px;transition:left 1.6s cubic-bezier(.4,0,.2,1),width 1.6s cubic-bezier(.4,0,.2,1),background .8s ease}
+.db-row .d25,.db-row .d26{position:absolute;top:3px;width:14px;height:14px;margin-left:-7px;border-radius:50%;transition:left 1.6s cubic-bezier(.4,0,.2,1)}
+.db-row .d25{background:var(--panel);border:2.5px solid var(--prata)}
+.db-row .d26{background:var(--accent);box-shadow:0 0 0 3px color-mix(in srgb,var(--accent) 20%,transparent)}
+.db-row .d26.Diamante{background:var(--diamante);box-shadow:0 0 0 3px color-mix(in srgb,var(--diamante) 30%,transparent)}
+.db-row .dv{font:600 13px var(--f-mono);text-align:right}
+.db-row .dv.up{color:var(--good)}.db-row .dv.down{color:var(--bad)}.db-row .dv.na{color:var(--muted);font-weight:500;font-size:11.5px}
+@media (max-width:700px){.db-axis,.db-row{grid-template-columns:110px 1fr 56px;gap:8px}}
+
 /* RANKING */
 .rank{background:var(--panel);border:1px solid var(--line);border-radius:20px;padding:8px 22px}
 .rrow{display:grid;grid-template-columns:28px minmax(130px,250px) 1fr 120px;gap:14px;align-items:center;padding:12px 0;border-bottom:1px solid var(--line);transition:background .3s}
@@ -203,8 +226,8 @@ section{padding:60px 0;border-top:1px solid var(--line);position:relative}
 .rrow .name{font-weight:600;font-size:15px;display:flex;align-items:center;gap:8px}
 .rrow .name img{width:18px}
 .rrow .barsbox{height:24px}
-.rrow .bars{display:flex;height:24px;border-radius:7px;transition:width 1s cubic-bezier(.2,.8,.2,1);min-width:4px}
-.rrow .bars b{height:100%;display:block;position:relative;cursor:pointer;transition:flex-grow .9s cubic-bezier(.2,.8,.2,1),filter .2s,opacity .3s}
+.rrow .bars{display:flex;height:24px;border-radius:7px;transition:width 1s cubic-bezier(.4,0,.2,1);min-width:4px}
+.rrow .bars b{height:100%;display:block;position:relative;cursor:pointer;transition:flex-grow .9s cubic-bezier(.4,0,.2,1),filter .2s,opacity .3s}
 .rrow .bars b:first-child{border-radius:7px 0 0 7px}.rrow .bars b:last-child{border-radius:0 7px 7px 0}.rrow .bars b:only-child{border-radius:7px}
 .rrow .bars b.dim{opacity:.18}
 .rrow .bars b:hover,.rrow .bars b:focus-visible{filter:brightness(1.15);outline:none}
@@ -219,16 +242,16 @@ section{padding:60px 0;border-top:1px solid var(--line);position:relative}
 
 /* EVOLUÇÃO */
 #chart svg{width:100%;height:auto;display:block}
-.drawline{stroke-dasharray:var(--l);stroke-dashoffset:var(--l);animation:dl 1.4s cubic-bezier(.2,.7,.2,1) forwards}
+.drawline{stroke-dasharray:var(--l);stroke-dashoffset:var(--l);animation:dl 1.8s cubic-bezier(.4,0,.2,1) forwards}
 @keyframes dl{to{stroke-dashoffset:0}}
-.fadeline{animation:fl 1.2s .3s ease both}@keyframes fl{from{opacity:0}}
-.pt{animation:pop .5s cubic-bezier(.3,1.6,.5,1) both}
-@keyframes pop{from{transform:scale(0)}}
+.fadeline{animation:fl 1.6s .2s ease both}@keyframes fl{from{opacity:0}}
+.pt{animation:pop .8s ease-out both}
+@keyframes pop{from{opacity:0;transform:scale(.6)}}
 .pt{transform-box:fill-box;transform-origin:center}
 .pipe{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:10px}
 .pipe li{display:grid;grid-template-columns:1fr auto;gap:4px 12px;padding:12px 14px;border:1px solid var(--line);border-radius:14px;position:relative;overflow:hidden}
 .pipe li .prog{grid-column:1 / -1;height:6px;border-radius:999px;background:var(--line);overflow:hidden}
-.pipe li .prog b{display:block;height:100%;border-radius:999px;background:linear-gradient(90deg,var(--accent),var(--diamante));width:0;transition:width 1.2s cubic-bezier(.2,.8,.2,1)}
+.pipe li .prog b{display:block;height:100%;border-radius:999px;background:linear-gradient(90deg,var(--accent),var(--diamante));width:0;transition:width 1.2s cubic-bezier(.4,0,.2,1)}
 .pipe .pn{font-weight:600;font-size:14.5px}
 .pipe .pm{font-size:13px;color:var(--muted)}
 .pipe .pv{grid-row:span 2;align-self:center;font:600 15px var(--f-mono)}
@@ -248,8 +271,8 @@ th{position:sticky;top:0;background:var(--panel);text-align:left;font:600 12px v
 td{padding:11px 14px;border-bottom:1px solid var(--line);vertical-align:middle}
 tbody tr{transition:background .15s}
 tbody tr:hover{background:color-mix(in srgb,var(--accent-soft) 70%,transparent)}
-tbody tr.enter{animation:rowIn .45s cubic-bezier(.2,.8,.2,1) both}
-@keyframes rowIn{from{transform:translateX(-10px)}}
+tbody tr.enter{animation:rowIn .7s ease both}
+@keyframes rowIn{from{opacity:.4;transform:translateY(4px)}}
 td.r{text-align:right}
 .pill{display:inline-flex;align-items:center;gap:6px;font:600 12px var(--f-body);padding:4px 10px;border-radius:999px;border:1px solid currentColor}
 .pill.Diamante{color:var(--diamante);background:color-mix(in srgb,var(--diamante) 10%,transparent)}.pill.Ouro{color:var(--ouro)}.pill.Prata{color:var(--prata)}
@@ -354,6 +377,14 @@ footer .fine{color:var(--muted);font-size:13px;max-width:50ch}
       <div class="card reveal"><h3 id="flowTitle">O que aconteceu com as de 2025</h3><p class="sub">Comparação entidade a entidade entre os dois ciclos</p><div id="flow"></div></div>
     </div>
     <div class="moves" id="moves"></div>
+    <div class="card reveal" style="margin-top:14px">
+      <div class="db-head">
+        <div><h3 id="dbTitle">Todas as entidades Workcenter: 2025 → 2026</h3><p class="sub" id="dbSub">Índice de cada entidade no ciclo 2025 e no ciclo 2026</p></div>
+        <div class="seg" role="group" aria-label="Ordenar" id="dbSort"><button data-s="i" aria-pressed="true">Índice 2026</button><button data-s="d" aria-pressed="false">Maior avanço</button><button data-s="n" aria-pressed="false">Nome</button></div>
+      </div>
+      <div class="db-legend legend"><span><i style="background:var(--prata);border-radius:50%"></i>2025</span><span><i style="background:var(--accent);border-radius:50%"></i>2026</span><span><i style="background:var(--good)"></i>subiu</span><span><i style="background:var(--bad)"></i>caiu</span></div>
+      <div class="db" id="db"></div>
+    </div>
   </div>
 </section>
 
@@ -478,8 +509,8 @@ function countTo(el, to, {dec=0, suffix="", prefix=""}={}){
   const from = parseFloat(el.dataset.v ?? 0) || 0; el.dataset.v = to;
   const show = v => el.textContent = prefix + v.toLocaleString("pt-BR",{minimumFractionDigits:dec,maximumFractionDigits:dec}) + suffix;
   if (REDUCED) return show(to);
-  const t0 = performance.now(), dur = 900;
-  const step = now => { const p = Math.min(1,(now-t0)/dur), e = 1-Math.pow(1-p,4); show(from+(to-from)*e); if(p<1) requestAnimationFrame(step); };
+  const t0 = performance.now(), dur = 1400;
+  const step = now => { const p = Math.min(1,(now-t0)/dur), e = p<.5 ? 4*p*p*p : 1-Math.pow(-2*p+2,3)/2; show(from+(to-from)*e); if(p<1) requestAnimationFrame(step); };
   requestAnimationFrame(step);
 }
 function flash(el){ if(!el||REDUCED) return; el.classList.remove("flash"); void el.offsetWidth; el.classList.add("flash"); }
@@ -522,7 +553,6 @@ function renderHero(){
       h+=`<circle class="arc" data-t="${t}" tabindex="0" role="button" aria-label="${tc[t]} ${t}" cx="200" cy="200" r="${R}" fill="none" stroke="${TC[t]}" stroke-width="24"
         stroke-dasharray="${len} ${C}" style="--len:${len};animation-delay:${.2+i*.2}s" transform="rotate(${-90+off/C*360} 200 200)"><title>${tc[t]} ${t}</title></circle>`;
       off+=len+gap; });
-    h+=`<g class="orbit"><circle cx="372" cy="158" r="7" fill="var(--accent)"/><circle cx="380" cy="200" r="6" fill="none" stroke="var(--accent)" stroke-width="3"/><circle cx="372" cy="242" r="7" fill="var(--accent)"/></g>`;
     svg.innerHTML=h;
     svg.querySelectorAll(".arc").forEach(a=>{a.onclick=()=>setTier(a.dataset.t); a.onkeydown=e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();setTier(a.dataset.t)}}});
     sealBuilt=true;
@@ -603,7 +633,7 @@ function renderBento(anim){
   countTo($("b6v"), best?best.i*100:0, {dec:2}); $("b6p").textContent = best?`${best.n} (${best.uf})`:"";
   countTo($("b7v"), avg(Wt.map(r=>r.i))*100, {dec:1});
   $("b7p").textContent = `Workcenter${t?` no ${t}`:""}. A média das demais empresas${t?` no ${t}`:""} é ${fmt(avg(Ot.map(r=>r.i)))}%.`;
-  if(anim) document.querySelectorAll("#bento .tile").forEach((el,i)=>setTimeout(()=>flash(el),i*50));
+  if(anim) document.querySelectorAll("#bento .tile").forEach((el,i)=>setTimeout(()=>flash(el),i*70));
 }
 
 /* ---------- COMPARATIVO ---------- */
@@ -619,7 +649,7 @@ function renderCmp(anim){
   $("cmpTop").innerHTML = box(t?`Entidades ${t}`:"Entidades certificáveis",A.length,B.length,delta(A.length,B.length),true)+
     box("Maranhão",ma25,ma26,delta(ma25,ma26))+box("Piauí",pi25,pi26,delta(pi25,pi26))+
     box("Índice médio",A.length?fmt(avg(A.map(r=>r.i)))+"%":"–",B.length?fmt(avg(B.map(r=>r.i)))+"%":"–",A.length&&B.length?delta(avg(A.map(r=>r.i)),avg(B.map(r=>r.i)),true):"");
-  if(anim) document.querySelectorAll("#cmpTop .cmp").forEach((el,i)=>setTimeout(()=>flash(el),i*60));
+  if(anim) document.querySelectorAll("#cmpTop .cmp").forEach((el,i)=>setTimeout(()=>flash(el),i*70));
   const c25=x=>P25.filter(r=>r.l===x).length, c26=x=>W.filter(r=>r.l===x).length, mx=Math.max(...TIERS.map(x=>Math.max(c25(x),c26(x))));
   $("cmpBars").innerHTML = TIERS.map(x=>`<div class="pair ${t&&t!==x?"dim":""}" data-t="${x}" role="button" tabindex="0" aria-label="Filtrar por ${x}">
       <span class="t"><i style="background:${TC[x]}"></i>${x}</span>
@@ -654,6 +684,36 @@ function renderCmp(anim){
     <div class="card reveal in"><h3>Desceram ou saíram · ${downs.length+outs.length}</h3><p class="sub">Atenção para o próximo ciclo</p><ul>${downs.map(p=>li(p.a.n,`${p.a.l} → ${p.b.l}`,`<span style="color:var(--bad)">${fmtPt(p.b.i-p.a.i)}</span>`)).join("")}${outs.map(r=>li(r.n,`${r.l} em 2025 · fora da lista em 2026`,`${fmt(r.i,1)}%`)).join("")||(downs.length?"":'<li class="empty">Nenhuma</li>')}</ul></div>
     <div class="card reveal in"><h3>Novas em 2026 · ${fresh.length}</h3><p class="sub">Selo 2026 e índice no ciclo anterior</p><ul>${fresh.map(r=>li(r.n,`${r.uf} · ${r.l} · 2025: ${r.h[3]==null?"sem avaliação":fmt(r.h[3],1)+"%"}`,`${fmt(r.i,1)}%`)).join("")||'<li class="empty">Nenhuma</li>'}</ul></div>`;
 }
+
+/* ---------- TODAS AS ENTIDADES 2025 -> 2026 ---------- */
+const DB={sort:"i"};
+const LO=.30, pctX=v=>Math.max(0,Math.min(100,(v-LO)/(1-LO)*100));
+function renderDumbbell(){
+  const t=S.tier;
+  const list=byTier(W).map(r=>({...r,a:r.h[3],d:r.h[3]==null?null:r.i-r.h[3]}));
+  list.sort(DB.sort==="n"?(a,b)=>a.n.localeCompare(b.n,"pt"):DB.sort==="d"?(a,b)=>(b.d??-9)-(a.d??-9):(a,b)=>b.i-a.i);
+  const up=list.filter(r=>r.d!=null&&r.d>0).length, dn=list.filter(r=>r.d!=null&&r.d<0).length, na=list.filter(r=>r.d==null).length;
+  $("dbTitle").textContent=`${t?`Entidades Workcenter ${t}`:"Todas as entidades Workcenter"}: 2025 → 2026`;
+  $("dbSub").textContent=`${list.length} entidades. ${up} subiram de índice, ${dn} caíram${na?` e ${na} não foram avaliadas em 2025`:""}. A linha ciano marca os 95% do Diamante.`;
+  const ticks=[40,50,60,70,80,90,100];
+  const th=[75,85,95].map(v=>`<span class="th ${v===95?"dia":""}" style="left:${pctX(v/100)}%"></span>`).join("");
+  const box=$("db");
+  box.innerHTML=`<div class="db-axis"><span>Entidade</span><span class="scale">${ticks.map(v=>`<span style="left:${pctX(v/100)}%">${v}%</span>`).join("")}</span><span style="text-align:right">Variação</span></div>`+
+    list.map(r=>{const a=r.a??r.i; return `<div class="db-row" title="${esc(r.n)}: ${r.a==null?"sem avaliação em 2025":fmt(r.a,2)+"%"} → ${fmt(r.i,2)}%">
+      <span class="dn">${esc(r.n)}<small>${r.uf} · ${r.l}</small></span>
+      <span class="tr">${th}
+        <span class="seg2" data-l="${pctX(Math.min(a,r.i))}" data-w="${Math.abs(pctX(r.i)-pctX(a))}" style="left:${pctX(a)}%;width:0;background:${r.d==null?"transparent":r.d>=0?"var(--good)":"var(--bad)"}"></span>
+        ${r.a==null?"":`<span class="d25" style="left:${pctX(a)}%"></span>`}
+        <span class="d26 ${r.l}" data-x="${pctX(r.i)}" style="left:${pctX(a)}%"></span>
+      </span>
+      <span class="dv ${r.d==null?"na":r.d>=0?"up":"down"}">${r.d==null?"novo":`${r.d>=0?"+":""}${(r.d*100).toLocaleString("pt-BR",{minimumFractionDigits:1,maximumFractionDigits:1})}`}</span></div>`}).join("");
+  // anima com calma: os pontos de 2026 deslizam a partir da posição de 2025
+  setTimeout(()=>box.querySelectorAll(".db-row").forEach((row,i)=>setTimeout(()=>{
+    const s=row.querySelector(".seg2"), d=row.querySelector(".d26");
+    if(s){s.style.left=s.dataset.l+"%";s.style.width=s.dataset.w+"%";} d.style.left=d.dataset.x+"%";
+  }, REDUCED?0:Math.min(i,30)*35)), 60);
+}
+$("dbSort").querySelectorAll("button").forEach(b=>b.onclick=()=>{DB.sort=b.dataset.s;$("dbSort").querySelectorAll("button").forEach(x=>x.setAttribute("aria-pressed",x===b?"true":"false"));renderDumbbell()});
 
 /* ---------- RANKING ---------- */
 const RANK = (()=>{const m={};rows.forEach(r=>{const k=r.e||"Não identificado";(m[k]??={n:k,t:{Diamante:0,Ouro:0,Prata:0},c:0});m[k].t[r.l]++;m[k].c++});return Object.values(m)})();
@@ -699,13 +759,14 @@ function renderChart(){
   s+=`<path d="${path(sw)}L${x(4)},${y(lo)}L${x(fi)},${y(lo)}Z" fill="var(--accent)" opacity=".10"/>`;
   s+=`<path class="fadeline" d="${path(so)}" fill="none" stroke="var(--prata)" stroke-width="2.5" stroke-dasharray="5 5"/>`;
   s+=`<path class="drawline" style="--l:${len(sw)}" d="${path(sw)}" fill="none" stroke="var(--accent)" stroke-width="3.5" stroke-linejoin="round" stroke-linecap="round"/>`;
-  // demais: rótulos ACIMA dos pontos
-  so.forEach((v,i)=>{ if(v==null) return; s+=`<circle class="pt" style="animation-delay:${.3+i*.12}s" cx="${x(i)}" cy="${y(v)}" r="3.5" fill="var(--prata)"/>
-    <text x="${x(i)}" y="${y(v)-11}" text-anchor="middle" font-size="11.5" fill="var(--muted)" ${mono}>${fmt(v)}</text>`});
-  // Workcenter: rótulos ABAIXO dos pontos
+  // rótulos: o ponto mais alto leva o rótulo acima, o mais baixo abaixo; assim os números nunca se sobrepõem
+  const pos=i=>{const a=sw[i],b=so[i]; if(a==null||b==null) return {w:"below",o:"above"}; return a>b?{w:"above",o:"below"}:{w:"below",o:"above"}};
+  const ly=(v,side,isW)=>{let yy=side==="above"? y(v)-(isW?14:11) : y(v)+(isW?24:21); return Math.min(H-B-4,Math.max(12,yy))};
+  so.forEach((v,i)=>{ if(v==null) return; s+=`<circle class="pt" style="animation-delay:${.4+i*.15}s" cx="${x(i)}" cy="${y(v)}" r="3.5" fill="var(--prata)"/>
+    <text class="pt" style="animation-delay:${.5+i*.15}s" x="${x(i)}" y="${ly(v,pos(i).o,false)}" text-anchor="middle" font-size="11.5" fill="var(--muted)" ${mono}>${fmt(v)}</text>`});
   sw.forEach((v,i)=>{ if(v==null) return; const last=i===4;
-    s+=`<circle class="pt" style="animation-delay:${.4+i*.12}s" cx="${x(i)}" cy="${y(v)}" r="${last?7:4.5}" fill="${last?"var(--accent)":"var(--panel)"}" stroke="var(--accent)" stroke-width="2.5"/>
-    <text x="${x(i)}" y="${y(v)+22}" text-anchor="middle" font-size="12.5" font-weight="600" fill="var(--accent)" ${mono}>${fmt(v)}</text>`});
+    s+=`<circle class="pt" style="animation-delay:${.5+i*.15}s" cx="${x(i)}" cy="${y(v)}" r="${last?7:4.5}" fill="${last?"var(--accent)":"var(--panel)"}" stroke="var(--accent)" stroke-width="2.5"/>
+    <text class="pt" style="animation-delay:${.6+i*.15}s" x="${x(i)}" y="${ly(v,pos(i).w,true)}" text-anchor="middle" font-size="12.5" font-weight="600" fill="var(--accent)" ${mono}>${fmt(v)}</text>`});
   $("chart").innerHTML=s+"</svg>";
 }
 
@@ -774,7 +835,7 @@ function renderTable(){
 })();
 
 function renderAll(anim){
-  moveGlider(); renderHero(); renderShowcase(); renderBento(anim); renderCmp(anim); renderRank(); renderChart();
+  moveGlider(); renderHero(); renderShowcase(); renderBento(anim); renderCmp(anim); renderDumbbell(); renderRank(); renderChart();
   if(T.lvl!==S.tier){ T.lvl=S.tier; $("fN").value=S.tier; } renderTable();
 }
 buildTierbar(); renderPipe(); renderAll(false);
