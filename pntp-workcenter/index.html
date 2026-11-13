@@ -57,6 +57,7 @@ nav .wrap{display:flex;align-items:center;gap:18px;height:64px}
 .tierbar button{position:relative;z-index:1;border:0;background:none;font:600 13.5px var(--f-body);color:var(--muted);padding:7px 14px;border-radius:999px;cursor:pointer;display:flex;gap:7px;align-items:center;transition:color .25s;white-space:nowrap}
 .tierbar button i{width:9px;height:9px;border-radius:50%}
 .tierbar button[aria-pressed="true"]{color:var(--paper)}
+.tierbar button[data-t]:not([data-t=""])[aria-pressed="true"]{color:#06103a}
 .tierbar button .c{font:600 11.5px var(--f-mono);opacity:.75}
 .navlinks{display:flex;gap:2px}
 .navlinks a{color:var(--muted);text-decoration:none;font-size:13.5px;font-weight:500;padding:7px 10px;border-radius:999px;white-space:nowrap;transition:background .2s,color .2s}
