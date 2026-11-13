@@ -100,7 +100,8 @@ svg :focus{outline:none}
 .arc:hover{stroke-width:30}
 .seal.has-sel .arc{opacity:.25}.seal.has-sel .arc.sel{opacity:1;stroke-width:32}
 @keyframes draw{from{stroke-dashoffset:var(--len)}to{stroke-dashoffset:0}}
-.arc{animation:draw 1.8s cubic-bezier(.4,0,.2,1) both}
+.arc{stroke-dashoffset:var(--len)}
+body.ready .arc{animation:draw 1.8s cubic-bezier(.4,0,.2,1) both}
 
 /* SECTIONS */
 section{padding:60px 0;border-top:1px solid var(--line);position:relative}
@@ -218,6 +219,12 @@ section{padding:60px 0;border-top:1px solid var(--line);position:relative}
 .db-row .dv.up{color:var(--good)}.db-row .dv.down{color:var(--bad)}.db-row .dv.na{color:var(--muted);font-weight:500;font-size:11.5px}
 @media (max-width:700px){.db-axis,.db-row{grid-template-columns:110px 1fr 56px;gap:8px}}
 
+.tt{position:fixed;z-index:50;left:0;top:0;background:var(--ink);color:var(--paper);font:600 12.5px/1.5 var(--f-body);padding:8px 12px;border-radius:10px;white-space:pre-line;pointer-events:none;opacity:0;transition:opacity .3s ease;max-width:320px}
+.tt.on{opacity:1}
+.db-row.avg{background:var(--accent-soft);border-radius:10px;border-bottom:0;margin-bottom:3px;padding-left:10px;padding-right:6px}
+.db-row.avg .dn{color:var(--accent)}
+.db-row .tr .th.mean{background:none;border-left:2px dashed var(--accent);width:0;opacity:.7}
+
 /* RANKING */
 .rank{background:var(--panel);border:1px solid var(--line);border-radius:20px;padding:8px 22px}
 .rrow{display:grid;grid-template-columns:28px minmax(130px,250px) 1fr 120px;gap:14px;align-items:center;padding:12px 0;border-bottom:1px solid var(--line);transition:background .3s}
@@ -311,7 +318,7 @@ footer .fine{color:var(--muted);font-size:13px;max-width:50ch}
   .rrow{grid-template-columns:22px 1fr 76px}.rrow .barsbox{grid-column:2 / 4}
 }
 @media (max-width:480px){.showcase{grid-template-columns:1fr}}
-@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,*::before,*::after{animation:none!important;transition:none!important}.reveal{transform:none}}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,*::before,*::after{animation:none!important;transition:none!important}.reveal{transform:none}.arc{stroke-dashoffset:0!important}}
 </style>
 </head>
 <body>
@@ -328,7 +335,7 @@ footer .fine{color:var(--muted);font-size:13px;max-width:50ch}
 <header class="hero" id="topo">
   <div class="wrap">
     <div>
-      <div class="eyebrow">Programa Nacional de Transparência Pública · ciclo 2026</div>
+      <div class="eyebrow">Programa Nacional de Transparência Pública · resultado consolidado 2026</div>
       <h1>Uma em cada quatro entidades certificáveis do Piauí e do Maranhão roda em portal <em>Workcenter</em>.</h1>
       <p class="lede" id="lede"></p>
       <div class="chips" id="heroChips"></div>
@@ -382,7 +389,7 @@ footer .fine{color:var(--muted);font-size:13px;max-width:50ch}
         <div><h3 id="dbTitle">Todas as entidades Workcenter: 2025 → 2026</h3><p class="sub" id="dbSub">Índice de cada entidade no ciclo 2025 e no ciclo 2026</p></div>
         <div class="seg" role="group" aria-label="Ordenar" id="dbSort"><button data-s="i" aria-pressed="true">Índice 2026</button><button data-s="d" aria-pressed="false">Maior avanço</button><button data-s="n" aria-pressed="false">Nome</button></div>
       </div>
-      <div class="db-legend legend"><span><i style="background:var(--prata);border-radius:50%"></i>2025</span><span><i style="background:var(--accent);border-radius:50%"></i>2026</span><span><i style="background:var(--good)"></i>subiu</span><span><i style="background:var(--bad)"></i>caiu</span></div>
+      <div class="db-legend legend"><span><i style="background:var(--prata);border-radius:50%"></i>2025</span><span><i style="background:var(--accent);border-radius:50%"></i>2026</span><span><i style="background:var(--good)"></i>subiu</span><span><i style="background:var(--bad)"></i>caiu</span><span><i style="background:none;border-left:2px dashed var(--accent);border-radius:0;width:2px;height:12px"></i>média geral 2026</span></div>
       <div class="db" id="db"></div>
     </div>
   </div>
@@ -505,10 +512,11 @@ const byTier = (arr,t=S.tier)=> t? arr.filter(r=>r.l===t) : arr;
 const tierName = t => t || "todos os selos";
 
 /* contador animado */
+let INIT=true;
 function countTo(el, to, {dec=0, suffix="", prefix=""}={}){
   const from = parseFloat(el.dataset.v ?? 0) || 0; el.dataset.v = to;
   const show = v => el.textContent = prefix + v.toLocaleString("pt-BR",{minimumFractionDigits:dec,maximumFractionDigits:dec}) + suffix;
-  if (REDUCED) return show(to);
+  if (REDUCED||INIT) return show(to);
   const t0 = performance.now(), dur = 1400;
   const step = now => { const p = Math.min(1,(now-t0)/dur), e = p<.5 ? 4*p*p*p : 1-Math.pow(-2*p+2,3)/2; show(from+(to-from)*e); if(p<1) requestAnimationFrame(step); };
   requestAnimationFrame(step);
@@ -577,7 +585,7 @@ function renderShowcase(){
   $("showTitle").textContent = `As ${t} da Workcenter`;
   $("showSub").textContent = `${list.length} entidades Workcenter têm selo ${t} em 2026, de ${total} ${t} entre todas as certificáveis de PI e MA (${fmt(list.length/total,0)}%).`;
   const max = 8;
-  $("showcase").innerHTML = list.slice(0,max).map((r,i)=>`<article class="gem enter" style="--tc:${TC[t]};animation-delay:${i*60}ms">
+  $("showcase").innerHTML = list.slice(0,max).map((r,i)=>`<article class="gem ${INIT?"":"enter"}" style="--tc:${TC[t]};animation-delay:${i*60}ms">
       <div class="grk num">#${String(i+1).padStart(2,"0")} · ${r.uf}</div>
       <div class="gv num">${fmt(r.i,2)}%</div>
       <div class="gn">${esc(r.n)}</div>
@@ -688,31 +696,46 @@ function renderCmp(anim){
 /* ---------- TODAS AS ENTIDADES 2025 -> 2026 ---------- */
 const DB={sort:"i"};
 const LO=.30, pctX=v=>Math.max(0,Math.min(100,(v-LO)/(1-LO)*100));
+let dbSeen=false;
+function animateDb(){
+  $("db").querySelectorAll(".db-row").forEach((row,i)=>setTimeout(()=>{
+    const s=row.querySelector(".seg2"), d=row.querySelector(".d26");
+    if(s){s.style.left=s.dataset.l+"%";s.style.width=s.dataset.w+"%";} d.style.left=d.dataset.x+"%";
+  }, REDUCED?0:Math.min(i,30)*35));
+}
 function renderDumbbell(){
-  const t=S.tier;
+  const t=S.tier, pt=d=>(d>=0?"+":"")+(d*100).toLocaleString("pt-BR",{minimumFractionDigits:1,maximumFractionDigits:1});
   const list=byTier(W).map(r=>({...r,a:r.h[3],d:r.h[3]==null?null:r.i-r.h[3]}));
   list.sort(DB.sort==="n"?(a,b)=>a.n.localeCompare(b.n,"pt"):DB.sort==="d"?(a,b)=>(b.d??-9)-(a.d??-9):(a,b)=>b.i-a.i);
   const up=list.filter(r=>r.d!=null&&r.d>0).length, dn=list.filter(r=>r.d!=null&&r.d<0).length, na=list.filter(r=>r.d==null).length;
+  const both=list.filter(r=>r.a!=null);
+  const mk=(name,g)=>g.length?{n:name,sub:`${g.length} ${plural(g.length,"entidade avaliada","entidades avaliadas")} nos dois ciclos`,a:avg(g.map(r=>r.a)),i:avg(g.map(r=>r.i)),d:avg(g.map(r=>r.i))-avg(g.map(r=>r.a)),l:"",avg:true}:null;
+  const means=[mk("Média geral",both),mk("Média das câmaras",both.filter(r=>r.p==="Legislativo")),mk("Média das prefeituras",both.filter(r=>r.p==="Executivo"))].filter(Boolean);
+  const gm=means[0];
   $("dbTitle").textContent=`${t?`Entidades Workcenter ${t}`:"Todas as entidades Workcenter"}: 2025 → 2026`;
-  $("dbSub").textContent=`${list.length} entidades. ${up} subiram de índice, ${dn} caíram${na?` e ${na} não foram avaliadas em 2025`:""}. A linha ciano marca os 95% do Diamante.`;
+  $("dbSub").textContent=`${list.length} entidades. ${up} subiram de índice, ${dn} caíram${na?` e ${na} não ${plural(na,"foi avaliada","foram avaliadas")} em 2025`:""}. Passe o mouse em uma linha para ver de onde saiu e aonde chegou. A linha ciano marca os 95% do Diamante.`;
   const ticks=[40,50,60,70,80,90,100];
-  const th=[75,85,95].map(v=>`<span class="th ${v===95?"dia":""}" style="left:${pctX(v/100)}%"></span>`).join("");
-  const box=$("db");
-  box.innerHTML=`<div class="db-axis"><span>Entidade</span><span class="scale">${ticks.map(v=>`<span style="left:${pctX(v/100)}%">${v}%</span>`).join("")}</span><span style="text-align:right">Variação</span></div>`+
-    list.map(r=>{const a=r.a??r.i; return `<div class="db-row" title="${esc(r.n)}: ${r.a==null?"sem avaliação em 2025":fmt(r.a,2)+"%"} → ${fmt(r.i,2)}%">
-      <span class="dn">${esc(r.n)}<small>${r.uf} · ${r.l}</small></span>
+  const th=[75,85,95].map(v=>`<span class="th ${v===95?"dia":""}" style="left:${pctX(v/100)}%"></span>`).join("")+(gm?`<span class="th mean" style="left:${pctX(gm.i)}%"></span>`:"");
+  const row=r=>{const a=r.a??r.i;
+    const tip=`${r.n}\n${r.a==null?"2025: sem avaliação":`2025: ${fmt(r.a,2)}%`}  →  2026: ${fmt(r.i,2)}%${r.d==null?"":`\nVariação: ${pt(r.d)} pt`}`;
+    return `<div class="db-row ${r.avg?"avg":""}" data-tt="${esc(tip)}">
+      <span class="dn">${esc(r.n)}<small>${r.avg?r.sub:`${r.uf} · ${r.l}`}</small></span>
       <span class="tr">${th}
         <span class="seg2" data-l="${pctX(Math.min(a,r.i))}" data-w="${Math.abs(pctX(r.i)-pctX(a))}" style="left:${pctX(a)}%;width:0;background:${r.d==null?"transparent":r.d>=0?"var(--good)":"var(--bad)"}"></span>
         ${r.a==null?"":`<span class="d25" style="left:${pctX(a)}%"></span>`}
         <span class="d26 ${r.l}" data-x="${pctX(r.i)}" style="left:${pctX(a)}%"></span>
       </span>
-      <span class="dv ${r.d==null?"na":r.d>=0?"up":"down"}">${r.d==null?"novo":`${r.d>=0?"+":""}${(r.d*100).toLocaleString("pt-BR",{minimumFractionDigits:1,maximumFractionDigits:1})}`}</span></div>`}).join("");
-  // anima com calma: os pontos de 2026 deslizam a partir da posição de 2025
-  setTimeout(()=>box.querySelectorAll(".db-row").forEach((row,i)=>setTimeout(()=>{
-    const s=row.querySelector(".seg2"), d=row.querySelector(".d26");
-    if(s){s.style.left=s.dataset.l+"%";s.style.width=s.dataset.w+"%";} d.style.left=d.dataset.x+"%";
-  }, REDUCED?0:Math.min(i,30)*35)), 60);
+      <span class="dv ${r.d==null?"na":r.d>=0?"up":"down"}">${r.d==null?"novo":pt(r.d)}</span></div>`};
+  $("db").innerHTML=`<div class="db-axis"><span>Entidade</span><span class="scale">${ticks.map(v=>`<span style="left:${pctX(v/100)}%">${v}%</span>`).join("")}</span><span style="text-align:right">Variação</span></div>`+
+    means.map(row).join("")+list.map(row).join("");
+  if(dbSeen) setTimeout(animateDb,60);
 }
+if("IntersectionObserver" in window) new IntersectionObserver((es,io)=>{if(es[0].isIntersecting){dbSeen=true;animateDb();io.disconnect()}},{threshold:.05}).observe($("db")); else dbSeen=true;
+(function(){const tt=document.createElement("div");tt.className="tt";document.body.appendChild(tt);
+  document.addEventListener("mousemove",e=>{const el=e.target.closest&&e.target.closest("[data-tt]");
+    if(!el){tt.classList.remove("on");return} tt.textContent=el.dataset.tt;tt.classList.add("on");
+    const w=tt.offsetWidth;tt.style.left=Math.min(innerWidth-w-8,Math.max(8,e.clientX-w/2))+"px";tt.style.top=Math.max(8,e.clientY-tt.offsetHeight-14)+"px"});
+  document.addEventListener("scroll",()=>tt.classList.remove("on"),true);})();
 $("dbSort").querySelectorAll("button").forEach(b=>b.onclick=()=>{DB.sort=b.dataset.s;$("dbSort").querySelectorAll("button").forEach(x=>x.setAttribute("aria-pressed",x===b?"true":"false"));renderDumbbell()});
 
 /* ---------- RANKING ---------- */
@@ -777,8 +800,8 @@ function renderPipe(){
     <span class="pm">${r.uf} · Ouro → Diamante · <span class="gap">faltam ${fmt(r.gap,2)} pt</span></span><span class="prog"><b data-w="${(r.i-.85)/.10*100}"></b></span></li>`).join("");
   requestAnimationFrame(()=>requestAnimationFrame(()=>$("pipe").querySelectorAll("b[data-w]").forEach(b=>b.style.width=Math.max(4,b.dataset.w)+"%")));
   const dia=W.filter(r=>r.l==="Diamante").length, n3=ouro.filter(r=>r.gap<=.03).length, n5=ouro.filter(r=>r.gap<=.05).length;
-  $("ctaText").textContent = `Hoje são ${dia} entidades Workcenter no selo Diamante. Entre as ${ouro.length} Ouro, ${n3} estão a até 3 pontos dos 95% e ${n5} a até 5 pontos. Se essas ${n5} subirem no próximo ciclo, a Workcenter passa a ter ${dia+n5} Diamante.`;
-  countTo($("ctaNum"), dia); $("ctaCap").textContent=`Diamante hoje · meta ${dia+n5}`;
+  $("ctaText").textContent = `Resultado consolidado do ciclo 2026: ${dia} entidades Workcenter no selo Diamante. Entre as ${ouro.length} Ouro, ${n3} estão a até 3 pontos dos 95% e ${n5} a até 5 pontos.`;
+  countTo($("ctaNum"), dia); $("ctaCap").textContent="Diamante no ciclo 2026";
 }
 
 /* ---------- TABELA ---------- */
@@ -793,10 +816,10 @@ function filtered(){
 function renderTable(){
   const f=filtered();
   $("count").textContent=`${f.length} ${plural(f.length,"entidade","entidades")}`;
-  $("tbody").innerHTML=f.map((r,i)=>`<tr class="enter" style="animation-delay:${Math.min(i,20)*18}ms">
+  $("tbody").innerHTML=f.map((r,i)=>`<tr class="${INIT?"":"enter"}" style="animation-delay:${Math.min(i,20)*18}ms">
     <td><strong>${esc(r.n)}</strong><div class="vend">${esc(r.m)} · ${esc(r.p)}</div></td>
     <td>${r.uf}</td><td><span class="pill ${r.l}">${r.l}</span></td>
-    <td class="r num">${fmt(r.i,2)}%</td><td>${spark(r.h)}</td>
+    <td class="r num">${fmt(r.i,2)}%</td><td data-tt="${r.h[3]==null?"2025: sem avaliação":`2025: ${fmt(r.h[3],2)}%`}  →  2026: ${fmt(r.i,2)}%">${spark(r.h)}</td>
     <td class="vend ${isW(r)?"isw":""}">${esc(r.e||"Não identificado")}</td>
     <td><a href="${esc(r.s)}">${esc(String(r.s).replace(/^https?:\/\//,"").replace(/\/$/,""))}</a></td></tr>`).join("")||
     `<tr><td colspan="7" style="text-align:center;color:var(--muted);padding:28px">Nenhuma entidade com esses filtros. Troque o selo, o poder ou limpe a busca.</td></tr>`;
@@ -821,7 +844,8 @@ function renderTable(){
   const size=()=>{const r=cv.getBoundingClientRect();W_=cv.width=r.width*devicePixelRatio;H_=cv.height=r.height*devicePixelRatio;
     pts=Array.from({length:46},()=>({x:Math.random()*W_,y:Math.random()*H_,s:(Math.random()*2+1)*devicePixelRatio,p:Math.random()*6.28,v:.4+Math.random()*.8}))};
   size(); addEventListener("resize",size);
-  (function tick(tm){ctx.clearRect(0,0,W_,H_);pts.forEach(p=>{const a=(Math.sin(tm/700*p.v+p.p)+1)/2;ctx.fillStyle=`rgba(168,240,251,${a*.9})`;
+  let vis=false;new IntersectionObserver(es=>vis=es[0].isIntersecting).observe(cv);
+  (function tick(tm){if(!vis){requestAnimationFrame(tick);return}ctx.clearRect(0,0,W_,H_);pts.forEach(p=>{const a=(Math.sin(tm/700*p.v+p.p)+1)/2;ctx.fillStyle=`rgba(168,240,251,${a*.9})`;
     ctx.beginPath();const s=p.s*(0.6+a);ctx.moveTo(p.x,p.y-s*2);ctx.lineTo(p.x+s*.6,p.y);ctx.lineTo(p.x,p.y+s*2);ctx.lineTo(p.x-s*.6,p.y);ctx.closePath();ctx.fill();p.y-=p.v*.15*devicePixelRatio;if(p.y<-10)p.y=H_+10});
     requestAnimationFrame(tick)})(0);
 })();
@@ -838,9 +862,11 @@ function renderAll(anim){
   moveGlider(); renderHero(); renderShowcase(); renderBento(anim); renderCmp(anim); renderDumbbell(); renderRank(); renderChart();
   if(T.lvl!==S.tier){ T.lvl=S.tier; $("fN").value=S.tier; } renderTable();
 }
-buildTierbar(); renderPipe(); renderAll(false);
+buildTierbar(); renderPipe(); renderAll(false); INIT=false;
+(document.fonts?Promise.race([document.fonts.ready,new Promise(r=>setTimeout(r,1200))]):Promise.resolve())
+  .then(()=>requestAnimationFrame(()=>requestAnimationFrame(()=>{moveGlider();document.body.classList.add("ready")})));
 addEventListener("resize",moveGlider);
-document.fonts && document.fonts.ready.then(moveGlider);
+
 </script>
 </body>
 </html>
