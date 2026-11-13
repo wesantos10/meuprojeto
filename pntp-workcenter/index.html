@@ -1,0 +1,619 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Workcenter no PNTP 2026</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600;12..96,800&family=Schibsted+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+/* Layout: selo como linguagem visual. Hero com o "anel do selo" (Diamante/Ouro/Prata), depois bento grid de números,
+   ranking de fornecedores com a Workcenter em destaque, evolução, tabela filtrável e rodapé. */
+:root{
+  --paper:#f3f4f1;
+  --panel:#ffffff;
+  --ink:#111a2b;
+  --muted:#5c6676;
+  --line:#dde0e4;
+  --accent:#1f4fd1;
+  --accent-soft:#e6ecfd;
+  --diamante:#3aa6bb;
+  --ouro:#c4971c;
+  --prata:#8f99a5;
+  --other:#c7ccd3;
+  --f-display:"Bricolage Grotesque", "Segoe UI", system-ui, sans-serif;
+  --f-body:"Schibsted Grotesk", "Segoe UI", system-ui, sans-serif;
+  --f-mono:"JetBrains Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --paper:#0c1220; --panel:#141c2e; --ink:#e8ecf4; --muted:#9aa5b8; --line:#26324a;
+    --accent:#7d9bff; --accent-soft:#1c2a52; --diamante:#5cc6da; --ouro:#e0b43c; --prata:#aab4c0; --other:#34405a;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"]{
+  --paper:#0c1220; --panel:#141c2e; --ink:#e8ecf4; --muted:#9aa5b8; --line:#26324a;
+  --accent:#7d9bff; --accent-soft:#1c2a52; --diamante:#5cc6da; --ouro:#e0b43c; --prata:#aab4c0; --other:#34405a;
+  color-scheme: dark;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+@media (prefers-reduced-motion: reduce){html{scroll-behavior:auto}*{animation:none!important;transition:none!important}}
+body{margin:0;background:var(--paper);color:var(--ink);font:16px/1.55 var(--f-body);-webkit-font-smoothing:antialiased}
+a{color:var(--accent)}
+a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:6px}
+h1,h2,h3{font-family:var(--f-display);text-wrap:balance;margin:0;line-height:1.05;letter-spacing:-.02em}
+.num{font-family:var(--f-mono);font-variant-numeric:tabular-nums}
+.wrap{max-width:1180px;margin:0 auto;padding:0 clamp(16px,4vw,40px)}
+
+/* NAV */
+nav{position:sticky;top:0;z-index:10;background:color-mix(in srgb,var(--paper) 86%,transparent);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+nav .wrap{display:flex;align-items:center;gap:24px;height:60px}
+.brand{display:flex;align-items:center;gap:10px;font-weight:700;text-decoration:none;color:var(--ink);white-space:nowrap}
+.brand .dot{width:22px;height:22px;border-radius:50%;background:conic-gradient(var(--diamante) 0 16%,var(--ouro) 16% 58%,var(--prata) 58% 100%);box-shadow:inset 0 0 0 5px var(--paper)}
+.navlinks{display:flex;gap:4px;margin-left:auto;overflow-x:auto;scrollbar-width:none}
+.navlinks a{color:var(--muted);text-decoration:none;font-size:14px;font-weight:500;padding:7px 12px;border-radius:999px;white-space:nowrap;transition:background .2s,color .2s}
+.navlinks a:hover{background:var(--accent-soft);color:var(--accent)}
+
+/* HERO */
+.hero{padding:56px 0 40px}
+.hero .wrap{display:grid;grid-template-columns:1.25fr .9fr;gap:40px;align-items:center}
+.eyebrow{font:600 12px/1 var(--f-mono);letter-spacing:.14em;text-transform:uppercase;color:var(--muted);display:flex;gap:10px;align-items:center}
+.eyebrow::before{content:"";width:28px;height:2px;background:var(--accent)}
+.hero h1{font-size:clamp(40px,6.2vw,76px);font-weight:800;margin:18px 0 18px}
+.hero h1 em{font-style:normal;color:var(--accent)}
+.lede{font-size:19px;color:var(--muted);max-width:56ch;margin:0}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:26px}
+.chip{display:inline-flex;align-items:center;gap:8px;padding:7px 12px;border-radius:999px;border:1px solid var(--line);background:var(--panel);font-size:14px;font-weight:600}
+.chip i{width:10px;height:10px;border-radius:50%;display:inline-block}
+.seal{position:relative;aspect-ratio:1;max-width:400px;width:100%;justify-self:center}
+.seal svg{width:100%;height:100%;overflow:visible}
+.seal .center{position:absolute;inset:0;display:grid;place-content:center;text-align:center}
+.seal .big{font:800 clamp(84px,11vw,132px)/.9 var(--f-display);letter-spacing:-.05em}
+.seal .cap{font-size:13px;color:var(--muted);max-width:18ch;margin:6px auto 0}
+.arc{transition:stroke-width .25s, opacity .25s;cursor:default}
+.seal:hover .arc{opacity:.45}.seal .arc:hover{opacity:1;stroke-width:30}
+@keyframes draw{from{stroke-dashoffset:var(--len)}to{stroke-dashoffset:0}}
+.arc{animation:draw 1.1s cubic-bezier(.2,.7,.2,1) both}
+
+/* SECTIONS */
+section{padding:56px 0;border-top:1px solid var(--line)}
+.sec-head{display:flex;justify-content:space-between;align-items:end;gap:24px;flex-wrap:wrap;margin-bottom:28px}
+.sec-head h2{font-size:clamp(28px,3.6vw,42px);font-weight:800;max-width:22ch}
+.sec-head p{color:var(--muted);max-width:52ch;margin:0}
+
+/* BENTO */
+.bento{display:grid;grid-template-columns:repeat(6,1fr);grid-auto-rows:minmax(150px,auto);gap:14px}
+.tile{background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:22px;display:flex;flex-direction:column;gap:8px;transition:transform .25s cubic-bezier(.2,.7,.2,1),border-color .25s}
+.tile:hover{transform:translateY(-3px);border-color:color-mix(in srgb,var(--accent) 40%,var(--line))}
+.tile .k{font:600 12px/1.3 var(--f-mono);letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.tile .v{font:800 46px/1 var(--f-display);letter-spacing:-.03em}
+.tile .v small{font-size:20px;font-weight:600;color:var(--muted);letter-spacing:0}
+.tile p{margin:0;color:var(--muted);font-size:14.5px}
+.tile.hl{background:var(--accent);border-color:var(--accent);color:#fff}
+.tile.hl .k,.tile.hl p,.tile.hl .v small{color:rgba(255,255,255,.8)}
+.t1{grid-column:span 3;grid-row:span 2}.t2{grid-column:span 3}.t3{grid-column:span 2}.t4{grid-column:span 1}
+.t5{grid-column:span 2}.t6{grid-column:span 2}.t7{grid-column:span 2}
+.ufbar{display:flex;flex-direction:column;gap:14px;margin-top:auto}
+.ufrow .lab{display:flex;justify-content:space-between;font-size:14px;margin-bottom:6px}
+.track{height:12px;border-radius:999px;background:var(--line);overflow:hidden;display:flex}
+.track b{display:block;height:100%;background:var(--accent);border-radius:999px}
+.tiers{display:flex;gap:6px;margin-top:auto;height:12px;border-radius:999px;overflow:hidden}
+.legend{display:flex;gap:14px;flex-wrap:wrap;font-size:13px;color:var(--muted)}
+.legend span{display:inline-flex;gap:6px;align-items:center}
+.legend i{width:10px;height:10px;border-radius:3px;display:inline-block}
+
+/* COMPARATIVO */
+.cmp-top{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+.cmp{background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:20px;display:flex;flex-direction:column;gap:6px}
+.cmp .k{font:600 12px/1.3 var(--f-mono);letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.cmp .ft{display:flex;align-items:baseline;gap:10px;font-family:var(--f-display)}
+.cmp .from{font-size:26px;font-weight:600;color:var(--muted)}
+.cmp .arrow{color:var(--muted);font-size:18px}
+.cmp .to{font-size:44px;font-weight:800;letter-spacing:-.03em}
+.delta{font:600 13px var(--f-mono);padding:3px 8px;border-radius:6px;align-self:flex-start}
+.delta.up{background:color-mix(in srgb,#1f9d55 16%,transparent);color:#1a8a4a}
+.delta.down{background:color-mix(in srgb,#d64545 14%,transparent);color:#c23b3b}
+.cmp.hl{background:var(--accent);border-color:var(--accent);color:#fff}
+.cmp.hl .k,.cmp.hl .from,.cmp.hl .arrow{color:rgba(255,255,255,.75)}
+.cmp.hl .delta.up{background:rgba(255,255,255,.18);color:#fff}
+.pair{display:grid;grid-template-columns:90px 1fr;gap:6px 14px;align-items:center;margin-bottom:16px}
+.pair .t{font-weight:600;font-size:14px;grid-row:span 2;display:flex;align-items:center;gap:8px}
+.pair .t i{width:10px;height:10px;border-radius:3px}
+.pb{display:flex;align-items:center;gap:8px;white-space:nowrap;font:600 13px var(--f-mono);color:var(--muted)}
+.pb b{height:14px;border-radius:4px;display:block}
+.flowbar{display:flex;height:42px;border-radius:10px;overflow:hidden;gap:3px;margin:6px 0 16px}
+.flowbar span{display:grid;place-items:center;color:#fff;font:600 14px var(--f-mono)}
+.flowlist{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:10px;font-size:14.5px}
+.flowlist li{display:flex;gap:10px;align-items:flex-start}
+.flowlist i{width:12px;height:12px;border-radius:3px;margin-top:5px;flex:none}
+.moves{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:14px}
+.moves .card ul{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;max-height:360px;overflow:auto}
+.moves .card li{display:grid;grid-template-columns:1fr auto;gap:2px 10px;padding:9px 0;border-bottom:1px solid var(--line);font-size:14px}
+.moves .card li:last-child{border-bottom:0}
+.moves .mv{font:500 12.5px var(--f-mono);color:var(--muted)}
+.moves .dv{font:600 13px var(--f-mono);grid-row:span 2;align-self:center}
+@media (max-width:900px){.cmp-top{grid-template-columns:repeat(2,1fr)}.moves{grid-template-columns:1fr}}
+
+/* RANKING */
+.rank{background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:8px 22px}
+.rrow{display:grid;grid-template-columns:28px minmax(120px,240px) 1fr 120px;gap:14px;align-items:center;padding:12px 0;border-bottom:1px solid var(--line)}
+.rrow:last-child{border-bottom:0}
+.rrow .pos{font:600 13px var(--f-mono);color:var(--muted)}
+.rrow .name{font-weight:600;font-size:15px}
+.rrow .bars{display:flex;height:22px;border-radius:6px;overflow:hidden;background:color-mix(in srgb,var(--line) 50%,transparent)}
+.rrow .bars b{height:100%;display:block;transition:filter .2s}
+.rrow .val{font:600 14px var(--f-mono);text-align:right;color:var(--muted)}
+.rrow.wc .name{color:var(--accent)}
+.rrow.wc{background:linear-gradient(90deg,var(--accent-soft),transparent 70%);margin:0 -22px;padding-left:22px;padding-right:22px;border-radius:12px}
+.rrow.wc .val{color:var(--ink)}
+.both{display:inline-block;font:600 10px/1 var(--f-mono);letter-spacing:.06em;padding:4px 6px;border-radius:5px;background:var(--accent);color:#fff;margin-left:6px;vertical-align:2px}
+
+/* EVOLUÇÃO */
+.grid2{display:grid;grid-template-columns:1.4fr 1fr;gap:14px}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:22px}
+.card h3{font-size:20px;font-weight:700;margin-bottom:6px}
+.card .sub{color:var(--muted);font-size:14px;margin:0 0 14px}
+#chart svg{width:100%;height:auto;display:block}
+.pipe{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:10px}
+.pipe li{display:grid;grid-template-columns:1fr auto;gap:4px 12px;padding:12px 14px;border:1px solid var(--line);border-radius:12px}
+.pipe .pn{font-weight:600;font-size:14.5px}
+.pipe .pm{font-size:13px;color:var(--muted)}
+.pipe .pv{grid-row:span 2;align-self:center;font:600 15px var(--f-mono)}
+.gap{font:600 12px var(--f-mono);color:var(--accent)}
+
+/* TABELA */
+.controls{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:14px;align-items:center}
+.seg{display:inline-flex;border:1px solid var(--line);border-radius:999px;padding:3px;background:var(--panel)}
+.seg button{border:0;background:transparent;color:var(--muted);font:600 13.5px var(--f-body);padding:7px 14px;border-radius:999px;cursor:pointer}
+.seg button[aria-pressed="true"]{background:var(--ink);color:var(--paper)}
+.controls input,.controls select{font:500 14px var(--f-body);color:var(--ink);background:var(--panel);border:1px solid var(--line);border-radius:999px;padding:8px 14px}
+.controls input{flex:1;min-width:200px}
+.btn{font:600 14px var(--f-body);border:1px solid var(--ink);background:var(--ink);color:var(--paper);padding:8px 16px;border-radius:999px;cursor:pointer;transition:transform .15s}
+.btn:hover{transform:translateY(-1px)}
+.btn.ghost{background:transparent;color:var(--ink)}
+.count{font-size:14px;color:var(--muted);margin-left:auto}
+.tablebox{background:var(--panel);border:1px solid var(--line);border-radius:18px;overflow:auto;max-height:640px}
+table{border-collapse:collapse;width:100%;min-width:820px;font-size:14px}
+th{position:sticky;top:0;background:var(--panel);text-align:left;font:600 12px var(--f-mono);letter-spacing:.06em;text-transform:uppercase;color:var(--muted);padding:12px 14px;border-bottom:1px solid var(--line);cursor:pointer;white-space:nowrap}
+th[aria-sort] ::after{content:""}
+td{padding:11px 14px;border-bottom:1px solid var(--line);vertical-align:middle}
+tr:last-child td{border-bottom:0}
+tbody tr{transition:background .15s}
+tbody tr:hover{background:color-mix(in srgb,var(--accent-soft) 60%,transparent)}
+td.r{text-align:right}
+.pill{display:inline-flex;align-items:center;gap:6px;font:600 12px var(--f-body);padding:4px 10px;border-radius:999px;border:1px solid currentColor}
+.pill.Diamante{color:var(--diamante)}.pill.Ouro{color:var(--ouro)}.pill.Prata{color:var(--prata)}
+.vend{font-size:13px;color:var(--muted)}
+.vend.isw{color:var(--accent);font-weight:700}
+.spark{display:block}
+td a{word-break:break-all;font-size:13px}
+
+/* CTA */
+.cta{background:var(--ink);color:var(--paper);border-radius:24px;padding:clamp(28px,5vw,56px);display:grid;grid-template-columns:1.3fr 1fr;gap:28px;align-items:center;position:relative;overflow:hidden}
+.cta h2{font-size:clamp(28px,4vw,46px);font-weight:800}
+.cta p{color:color-mix(in srgb,var(--paper) 72%,transparent);margin:12px 0 0;max-width:52ch}
+.cta .actions{display:flex;flex-direction:column;gap:10px;align-items:flex-start}
+.cta .btn{background:var(--paper);color:var(--ink);border-color:var(--paper)}
+.cta .btn.ghost{background:transparent;color:var(--paper)}
+.cta::after{content:"";position:absolute;right:-90px;bottom:-90px;width:260px;height:260px;border-radius:50%;border:26px solid color-mix(in srgb,var(--ouro) 60%,transparent);opacity:.35}
+
+/* MÉTODO + FOOTER */
+.method{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.method .card p{margin:0;color:var(--muted);font-size:14.5px}
+.method .card b{display:block;font:600 12px var(--f-mono);letter-spacing:.08em;text-transform:uppercase;color:var(--accent);margin-bottom:8px}
+footer{border-top:1px solid var(--line);padding:40px 0 56px;margin-top:56px}
+footer .wrap{display:grid;grid-template-columns:2fr 1fr 1fr;gap:28px}
+footer h4{font:600 12px var(--f-mono);letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin:0 0 12px}
+footer ul{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:8px;font-size:14px}
+footer a{color:var(--ink);text-decoration:none}footer a:hover{color:var(--accent)}
+footer .fine{color:var(--muted);font-size:13px;max-width:50ch}
+.toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--ink);color:var(--paper);padding:10px 16px;border-radius:999px;font-size:14px;opacity:0;transition:.25s;pointer-events:none}
+.toast.on{opacity:1;transform:translateX(-50%) translateY(0)}
+
+@media (max-width:900px){
+  .hero .wrap,.grid2,.cta,.method,footer .wrap{grid-template-columns:1fr}
+  .bento{grid-template-columns:repeat(2,1fr)}
+  .t1,.t2,.t3,.t4,.t5,.t6,.t7{grid-column:span 2;grid-row:auto}
+  .rrow{grid-template-columns:22px 1fr 70px}.rrow .bars{grid-column:2 / 4}
+  .navlinks a{padding:7px 9px}
+}
+</style>
+</head>
+<body>
+<nav aria-label="Seções">
+  <div class="wrap">
+    <a class="brand" href="#topo"><span class="dot" aria-hidden="true"></span>PNTP 2026 · PI + MA</a>
+    <div class="navlinks">
+      <a href="#workcenter">Workcenter</a>
+      <a href="#comparativo">2025 × 2026</a>
+      <a href="#fornecedores">Fornecedores</a>
+      <a href="#evolucao">Evolução</a>
+      <a href="#entidades">Entidades</a>
+      <a href="#metodo">Método</a>
+    </div>
+  </div>
+</nav>
+
+<header class="hero" id="topo">
+  <div class="wrap">
+    <div>
+      <div class="eyebrow">Programa Nacional de Transparência Pública · ciclo 2026</div>
+      <h1>Uma em cada quatro entidades certificáveis do Piauí e do Maranhão roda em portal <em>Workcenter</em>.</h1>
+      <p class="lede" id="lede"></p>
+      <div class="chips" id="heroChips"></div>
+    </div>
+    <div class="seal" aria-label="Distribuição dos selos das entidades Workcenter">
+      <svg viewBox="0 0 400 400" id="sealSvg" role="img" aria-hidden="true"></svg>
+      <div class="center">
+        <div class="big num" id="sealNum">50</div>
+        <div class="cap">entidades certificáveis com portal Workcenter</div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<section id="workcenter">
+  <div class="wrap">
+    <div class="sec-head">
+      <h2>O retrato da Workcenter nos dois estados</h2>
+      <p>Todos os números vêm das 206 entidades marcadas como certificáveis no Radar da Transparência (ciclo 2026), com a empresa identificada em cada portal.</p>
+    </div>
+    <div class="bento" id="bento"></div>
+  </div>
+</section>
+
+<section id="comparativo">
+  <div class="wrap">
+    <div class="sec-head">
+      <h2 id="cmpTitle">2025 × 2026</h2>
+      <p>Entidades certificáveis em portal Workcenter no ciclo 2025 (planilha interna) comparadas com as do ciclo 2026 (Radar da Transparência).</p>
+    </div>
+    <div class="cmp-top" id="cmpTop"></div>
+    <div class="grid2" style="margin-top:14px">
+      <div class="card">
+        <h3>Selos por ciclo</h3>
+        <p class="sub">Quantidade de entidades Workcenter em cada selo</p>
+        <div id="cmpBars"></div>
+      </div>
+      <div class="card">
+        <h3>O que aconteceu com as 31 de 2025</h3>
+        <p class="sub">Comparação entidade a entidade entre os dois ciclos</p>
+        <div id="flow"></div>
+      </div>
+    </div>
+    <div class="moves" id="moves"></div>
+  </div>
+</section>
+
+<section id="fornecedores">
+  <div class="wrap">
+    <div class="sec-head">
+      <h2>Quem faz os portais certificáveis</h2>
+      <p>Entidades certificáveis por empresa, somando PI e MA. A barra mostra o selo de cada uma. A marca <span class="both">PI+MA</span> indica presença nos dois estados.</p>
+    </div>
+    <div class="rank" id="rank"></div>
+    <div class="legend" style="margin-top:14px">
+      <span><i style="background:var(--diamante)"></i>Diamante</span>
+      <span><i style="background:var(--ouro)"></i>Ouro</span>
+      <span><i style="background:var(--prata)"></i>Prata</span>
+    </div>
+  </div>
+</section>
+
+<section id="evolucao">
+  <div class="wrap">
+    <div class="sec-head">
+      <h2>De 57,8% para 86,5% em três ciclos</h2>
+      <p>Índice médio das entidades em cada ciclo, só entre as que foram avaliadas naquele ano.</p>
+    </div>
+    <div class="grid2">
+      <div class="card">
+        <h3>Índice médio por ciclo</h3>
+        <p class="sub">Entidades Workcenter contra as demais certificáveis de PI e MA</p>
+        <div id="chart"></div>
+        <div class="legend" style="margin-top:10px">
+          <span><i style="background:var(--accent)"></i>Workcenter</span>
+          <span><i style="background:var(--prata)"></i>Demais empresas</span>
+        </div>
+      </div>
+      <div class="card">
+        <h3>Perto do próximo selo</h3>
+        <p class="sub">Entidades Workcenter a menos de 1,5 ponto do selo seguinte (Ouro a partir de 85%, Diamante a partir de 95%)</p>
+        <ul class="pipe" id="pipe"></ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="entidades">
+  <div class="wrap">
+    <div class="sec-head">
+      <h2>Todas as entidades</h2>
+      <p>Filtre por estado, selo e empresa. Clique no título de uma coluna para ordenar.</p>
+    </div>
+    <div class="controls">
+      <div class="seg" role="group" aria-label="Empresa">
+        <button id="fW" aria-pressed="true">Só Workcenter</button>
+        <button id="fA" aria-pressed="false">Todas as empresas</button>
+      </div>
+      <div class="seg" role="group" aria-label="Estado">
+        <button data-uf="" aria-pressed="true">PI + MA</button>
+        <button data-uf="PI" aria-pressed="false">Piauí</button>
+        <button data-uf="MA" aria-pressed="false">Maranhão</button>
+      </div>
+      <select id="fN" aria-label="Selo">
+        <option value="">Todos os selos</option><option>Diamante</option><option>Ouro</option><option>Prata</option>
+      </select>
+      <input id="fQ" type="search" placeholder="Buscar entidade ou município" aria-label="Buscar entidade ou município">
+      <button class="btn ghost" id="copy">Copiar tabela</button>
+      <span class="count" id="count"></span>
+    </div>
+    <div class="tablebox">
+      <table>
+        <thead><tr>
+          <th data-k="n">Entidade</th><th data-k="uf">UF</th><th data-k="l">Selo</th>
+          <th data-k="i" class="r">Índice 2026</th><th>2022 → 2026</th><th data-k="e">Empresa</th><th>Site</th>
+        </tr></thead>
+        <tbody id="tbody"></tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <div class="cta">
+      <div>
+        <h2>Próximo passo: levar as Prata para Ouro.</h2>
+        <p id="ctaText"></p>
+      </div>
+      <div class="actions">
+        <a class="btn" href="https://radardatransparencia.atricon.org.br/painel-6/">Abrir o painel do Radar</a>
+        <button class="btn ghost" id="copyPrata">Copiar lista das Prata Workcenter</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="metodo">
+  <div class="wrap">
+    <div class="sec-head"><h2>Como os números foram feitos</h2></div>
+    <div class="method">
+      <div class="card"><b>Fonte</b><p>Painel 6 do Radar da Transparência Pública (Atricon), ciclo 2026, com os filtros por UF e "só certificáveis". São 32 entidades no Piauí e 174 no Maranhão.</p></div>
+      <div class="card"><b>Empresa</b><p>Cada portal foi aberto e a empresa foi identificada pelo crédito no rodapé ou por marcas técnicas da plataforma. Depois, a lista foi revisada manualmente.</p></div>
+      <div class="card"><b>Selos</b><p>Certificável é a entidade que atende 100% dos critérios essenciais. O selo depende do índice: Diamante a partir de 95%, Ouro a partir de 85% e Prata a partir de 75%.</p></div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <div>
+      <a class="brand" href="#topo"><span class="dot" aria-hidden="true"></span>PNTP 2026 · PI + MA</a>
+      <p class="fine" style="margin-top:12px">Levantamento feito em novembro de 2026 a partir de dados públicos do Radar da Transparência. Os índices são os do ciclo 2026 publicados no painel.</p>
+    </div>
+    <div><h4>Seções</h4><ul><li><a href="#workcenter">Workcenter</a></li><li><a href="#fornecedores">Fornecedores</a></li><li><a href="#evolucao">Evolução</a></li><li><a href="#entidades">Entidades</a></li></ul></div>
+    <div><h4>Fontes</h4><ul><li><a href="https://radardatransparencia.atricon.org.br/painel-6/">Radar da Transparência · Painel 6</a></li><li><a href="https://radardatransparencia.atricon.org.br/">Radar da Transparência</a></li></ul></div>
+  </div>
+</footer>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script>
+const DATA = {"PI": [{"n": "Tribunal de Justiça do Estado do Piauí", "s": "https://www.tjpi.jus.br/portaltjpi/", "e": "TI própria", "m": "Teresina", "l": "Diamante", "i": 1, "p": "Judiciário", "f": "Estadual", "h": [0.7716, 0.9667, 1, 1, 1]}, {"n": "Defensoria Pública do Estado do Piauí", "s": "https://www.defensoria.pi.def.br/", "e": "TI própria", "m": "Teresina", "l": "Diamante", "i": 0.9949, "p": "Defensoria Pública", "f": "Estadual", "h": [0.64, 0.7381, 0.9602, 0.9541, 0.9949]}, {"n": "Prefeitura Municipal de Lagoa do Barro do Piauí", "s": "https://lagoadobarro.pi.gov.br/", "e": "CR2", "m": "Lagoa do Barro do Piauí", "l": "Diamante", "i": 0.9887, "p": "Executivo", "f": "Municipal", "h": [0.6208, 0.6751, 0.8593, 0.9149, 0.9887]}, {"n": "Ministério Público do Estado do Piauí", "s": "https://www.mppi.mp.br/internet/", "e": "TI própria", "m": "Teresina", "l": "Diamante", "i": 0.9816, "p": "Ministério Público", "f": "Estadual", "h": [0.7672, 0.9755, 1, 0.9751, 0.9816]}, {"n": "Tribunal de Contas do Estado do Piauí", "s": "https://www.tcepi.tc.br/", "e": "TI própria", "m": "Teresina", "l": "Diamante", "i": 0.979, "p": "Tribunal de Contas", "f": "Estadual", "h": [0.9837, 0.9669, 0.9853, 0.9857, 0.979]}, {"n": "Governo do Estado do Piauí", "s": "https://www.pi.gov.br", "e": "TI própria", "m": "Teresina", "l": "Diamante", "i": 0.9698, "p": "Executivo", "f": "Estadual", "h": [0.8253, 0.6705, 0.9055, 0.8007, 0.9698]}, {"n": "Assembleia Legislativa do Estado do Piauí", "s": "https://www.al.pi.leg.br/", "e": "Interlegis", "m": "Teresina", "l": "Diamante", "i": 0.9541, "p": "Legislativo", "f": "Estadual", "h": [0.4781, 0.6278, 0.8452, 0.8877, 0.9541]}, {"n": "Prefeitura Municipal de Pedro Laurentino", "s": "https://pedrolaurentino.pi.gov.br/", "e": "CR2", "m": "Pedro Laurentino", "l": "Ouro", "i": 0.9496, "p": "Executivo", "f": "Municipal", "h": [0.6552, 0.6051, 0.4537, 0.7437, 0.9496]}, {"n": "Prefeitura Municipal de Demerval Lobão", "s": "https://demervallobao.pi.gov.br/", "e": "CR2", "m": "Demerval Lobão", "l": "Ouro", "i": 0.9272, "p": "Executivo", "f": "Municipal", "h": [0.5762, 0.5613, 0.5917, 0.5787, 0.9272]}, {"n": "Prefeitura Municipal de Socorro do Piauí", "s": "https://socorrodopiaui.pi.gov.br/", "e": "CR2", "m": "Socorro do Piauí", "l": "Ouro", "i": 0.9123, "p": "Executivo", "f": "Municipal", "h": [0.7026, 0.4331, 0.2275, 0.3687, 0.9123]}, {"n": "Prefeitura Municipal de São João do Piauí", "s": "https://saojoaodopiaui.pi.gov.br/", "e": "CR2", "m": "São João do Piauí", "l": "Ouro", "i": 0.911, "p": "Executivo", "f": "Municipal", "h": [0.7026, 0.4173, 0.3809, 0.8641, 0.911]}, {"n": "Câmara Municipal de Nova Santa Rita", "s": "https://novasantarita.pi.leg.br/", "e": "Assesi", "m": "Nova Santa Rita", "l": "Ouro", "i": 0.9103, "p": "Legislativo", "f": "Municipal", "h": [0.5976, 0.7358, 0.6449, 0.4485, 0.9103]}, {"n": "Prefeitura Municipal de Nossa Senhora de Nazaré", "s": "https://nossasenhoradenazare.pi.gov.br/", "e": "Workcenter", "m": "Nossa Senhora de Nazaré", "l": "Ouro", "i": 0.9068, "p": "Executivo", "f": "Municipal", "h": [0.7063, 0.6915, 0.3938, 0.8627, 0.9068]}, {"n": "Câmara Municipal de Ribeira do Piauí", "s": "https://ribeiradopiaui.pi.leg.br/", "e": "Simples Informática", "m": "Ribeira do Piauí", "l": "Ouro", "i": 0.904, "p": "Legislativo", "f": "Municipal", "h": [0, 0.0974, 0.1396, 0.5186, 0.904]}, {"n": "Câmara Municipal de Bom Princípio do Piauí", "s": "https://www.bomprincipiodopiaui.pi.leg.br/", "e": "Interlegis", "m": "Bom Princípio do Piauí", "l": "Ouro", "i": 0.8992, "p": "Legislativo", "f": "Municipal", "h": [0.6135, 0.2294, 0.2959, 0, 0.8992]}, {"n": "Câmara Municipal de Tanque do Piauí", "s": "https://camaratanquedopiaui.pi.gov.br/", "e": "Workcenter", "m": "Tanque do Piauí", "l": "Ouro", "i": 0.8948, "p": "Legislativo", "f": "Municipal", "h": [0.6813, 0.3311, 0.4245, 0.5721, 0.8948]}, {"n": "Prefeitura Municipal de Simões", "s": "https://simoes.pi.gov.br/", "e": "Softagon Sistemas", "m": "Simões", "l": "Ouro", "i": 0.885, "p": "Executivo", "f": "Municipal", "h": [0.6506, 0.5183, 0.4403, 0.6704, 0.885]}, {"n": "Prefeitura Municipal de Padre Marcos", "s": "https://www.padremarcos.pi.gov.br/", "e": "Sistema Contábil Municipal", "m": "Padre Marcos", "l": "Ouro", "i": 0.8766, "p": "Executivo", "f": "Municipal", "h": [0.2788, 0.3895, 0.5934, 0.6952, 0.8766]}, {"n": "Câmara Municipal de Nossa Senhora de Nazaré", "s": "https://camaranossasenhoradenazare.pi.gov.br/", "e": "Workcenter", "m": "Nossa Senhora de Nazaré", "l": "Ouro", "i": 0.8732, "p": "Legislativo", "f": "Municipal", "h": [0.2669, 0.1295, 0.2241, 0.7197, 0.8732]}, {"n": "Câmara Municipal de Colônia do Piauí", "s": "https://coloniadopiaui.pi.leg.br", "e": "Suporte Tecnologia", "m": "Colônia do Piauí", "l": "Ouro", "i": 0.8669, "p": "Legislativo", "f": "Municipal", "h": [0.1594, 0.1585, 0.19, 0.3587, 0.8669]}, {"n": "Prefeitura Municipal de Cristino Castro", "s": "https://cristinocastro.pi.gov.br/", "e": "Soft Soluções", "m": "Cristino Castro", "l": "Ouro", "i": 0.8537, "p": "Executivo", "f": "Municipal", "h": [0.5651, 0.4958, 0.6145, 0.7128, 0.8537]}, {"n": "Prefeitura Municipal de Tamboril do Piauí", "s": "https://tamborildopiaui.pi.gov.br/", "e": "STS Informática", "m": "Tamboril do Piauí", "l": "Prata", "i": 0.8492, "p": "Executivo", "f": "Municipal", "h": [0.7509, 0.6109, 0.617, 0.5686, 0.8492]}, {"n": "Câmara Municipal de Pau D'Arco do Piauí", "s": "https://www.paudarcodopiaui.pi.leg.br/", "e": "Interlegis", "m": "Pau D'Arco do Piauí", "l": "Prata", "i": 0.848, "p": "Legislativo", "f": "Municipal", "h": [0.5378, 0.2539, 0.1776, 0.424, 0.848]}, {"n": "Prefeitura Municipal de Caraúbas do Piauí", "s": "https://caraubas.pi.gov.br/", "e": "Artur Pereira", "m": "Caraúbas do Piauí", "l": "Prata", "i": 0.8236, "p": "Executivo", "f": "Municipal", "h": [0.6952, 0.3136, 0.5631, 0.6806, 0.8236]}, {"n": "Câmara Municipal de Juazeiro do Piauí", "s": "https://camarajuazeirodopiaui.pi.gov.br/", "e": "Workcenter", "m": "Juazeiro do Piauí", "l": "Prata", "i": 0.8225, "p": "Legislativo", "f": "Municipal", "h": [0.3426, 0.1953, 0.1423, 0.3229, 0.8225]}, {"n": "Câmara Municipal de Teresina", "s": "https://www.teresina.pi.leg.br/", "e": "TI própria (provável)", "m": "Teresina", "l": "Prata", "i": 0.8204, "p": "Legislativo", "f": "Municipal", "h": [0.498, 0.515, 0.5406, 0.7646, 0.8204]}, {"n": "Prefeitura Municipal de Jatobá do Piauí", "s": "https://jatobadopiaui.pi.gov.br/", "e": "OneTap", "m": "Jatobá do Piauí", "l": "Prata", "i": 0.8112, "p": "Executivo", "f": "Municipal", "h": [0.539, 0.1938, 0.5086, 0.6926, 0.8112]}, {"n": "Câmara Municipal de Lagoa do Barro do Piauí", "s": "https://lagoadobarrodopiaui.pi.leg.br/", "e": "CR2", "m": "Lagoa do Barro do Piauí", "l": "Prata", "i": 0.8085, "p": "Legislativo", "f": "Municipal", "h": [0.5857, 0.1388, 0.1883, 0.3814, 0.8085]}, {"n": "Prefeitura Municipal de Floriano", "s": "https://www.floriano.pi.gov.br/", "e": "STS Informática", "m": "Floriano", "l": "Prata", "i": 0.7943, "p": "Executivo", "f": "Municipal", "h": [0.7918, 0.7151, 0.6683, 0.7683, 0.7943]}, {"n": "Prefeitura Municipal de Beneditinos", "s": "https://beneditinos.pi.gov.br/", "e": "Workcenter", "m": "Beneditinos", "l": "Prata", "i": 0.7897, "p": "Executivo", "f": "Municipal", "h": [0.6357, 0.6952, 0.3694, 0.6547, 0.7897]}, {"n": "Prefeitura Municipal de Hugo Napoleão", "s": "https://hugonapoleao.pi.gov.br/", "e": "Suporte Tecnologia", "m": "Hugo Napoleão", "l": "Prata", "i": 0.7767, "p": "Executivo", "f": "Municipal", "h": [0.7658, 0.156, 0.2935, 0.486, 0.7767]}, {"n": "Câmara Municipal de Domingos Mourão", "s": "https://www.domingosmourao.pi.leg.br/", "e": "Interlegis", "m": "Domingos Mourão", "l": "Prata", "i": 0.7674, "p": "Legislativo", "f": "Municipal", "h": [0.5777, 0.642, 0.3465, 0.7974, 0.7674]}], "MA": [{"n": "Câmara Municipal de Vila Nova dos Martírios", "s": "https://cmvilanovadosmartirios.ma.gov.br/", "e": "Commit Soluções", "m": "Vila Nova dos Martírios", "l": "Diamante", "i": 1, "p": "Legislativo", "f": "Municipal", "h": [null, 0.6462, 0.8291, 0.9423, 1]}, {"n": "Defensoria Pública do Estado do Maranhão", "s": "https://defensoria.ma.def.br/dpema/", "e": "TI própria", "m": "São Luís", "l": "Diamante", "i": 1, "p": "Defensoria Pública", "f": "Estadual", "h": [0.7956, 0.8868, 0.9526, 0.9791, 1]}, {"n": "Ministério Público do Estado do Maranhão", "s": "https://www.mpma.mp.br/", "e": "TI própria", "m": "São Luís", "l": "Diamante", "i": 1, "p": "Ministério Público", "f": "Estadual", "h": [0.6916, 0.8512, 0.8764, 0.9685, 1]}, {"n": "Prefeitura Municipal de Bom Lugar", "s": "https://www.bomlugar.ma.gov.br/", "e": "Assesi", "m": "Bom Lugar", "l": "Diamante", "i": 1, "p": "Executivo", "f": "Municipal", "h": [0.9698, 0.8238, 0.8113, 0.9802, 1]}, {"n": "Prefeitura Municipal de Ribamar Fiquene", "s": "https://www.ribamarfiquene.ma.gov.br/", "e": "Commit Soluções", "m": "Ribamar Fiquene", "l": "Diamante", "i": 0.9947, "p": "Executivo", "f": "Municipal", "h": [0.8959, 0.7639, 0.9022, 0.9605, 0.9947]}, {"n": "Câmara Municipal de Estreito", "s": "https://www.cmestreito.ma.gov.br/", "e": "Commit Soluções", "m": "Estreito", "l": "Diamante", "i": 0.9931, "p": "Legislativo", "f": "Municipal", "h": [0.6653, 0.6126, 0, 0.8578, 0.9931]}, {"n": "Prefeitura Municipal de Davinópolis", "s": "https://www.davinopolis.ma.gov.br/", "e": "Commit Soluções", "m": "Davinópolis", "l": "Diamante", "i": 0.992, "p": "Executivo", "f": "Municipal", "h": [0.7026, 0.7372, 0.906, 0.9487, 0.992]}, {"n": "Tribunal de Justiça do Estado do Maranhão", "s": "https://www.tjma.jus.br/portal", "e": "TI própria", "m": "São Luís", "l": "Diamante", "i": 0.991, "p": "Judiciário", "f": "Estadual", "h": [0.8584, 0.8553, 0.9005, 0.959, 0.991]}, {"n": "Câmara Municipal de Senador La Rocque", "s": "https://cmsenadorlarocque.ma.gov.br/", "e": "Commit Soluções", "m": "Senador La Rocque", "l": "Diamante", "i": 0.9892, "p": "Legislativo", "f": "Municipal", "h": [null, 0.4586, null, 0.8938, 0.9892]}, {"n": "Câmara Municipal de Governador Archer", "s": "https://cmgovernadorarcher.ma.gov.br/", "e": "Workcenter", "m": "Governador Archer", "l": "Diamante", "i": 0.9891, "p": "Legislativo", "f": "Municipal", "h": [0.4781, null, 0.8013, 0.871, 0.9891]}, {"n": "Câmara Municipal de Itinga do Maranhão", "s": "https://cmitinga.ma.gov.br/", "e": "Commit Soluções", "m": "Itinga do Maranhão", "l": "Diamante", "i": 0.9884, "p": "Legislativo", "f": "Municipal", "h": [0.4263, null, null, null, 0.9884]}, {"n": "Tribunal de Contas do Estado do Maranhão", "s": "https://www.tcema.tc.br/", "e": "TI própria", "m": "São Luís", "l": "Diamante", "i": 0.987, "p": "Tribunal de Contas", "f": "Estadual", "h": [0.939, 0.9026, 0.9822, 0.951, 0.987]}, {"n": "Prefeitura Municipal de Senador La Rocque", "s": "https://www.senadorlarocque.ma.gov.br/", "e": "Commit Soluções", "m": "Senador La Rocque", "l": "Diamante", "i": 0.986, "p": "Executivo", "f": "Municipal", "h": [0.4349, 0.7102, 0.9713, 0.937, 0.986]}, {"n": "Prefeitura Municipal de Pedreiras", "s": "https://pedreiras.ma.gov.br/", "e": "Assesi", "m": "Pedreiras", "l": "Diamante", "i": 0.9825, "p": "Executivo", "f": "Municipal", "h": [0.9405, 0.8891, 0.8944, 0.9867, 0.9825]}, {"n": "Prefeitura Municipal de Timon", "s": "https://timon.ma.gov.br/site/", "e": "Commit Soluções", "m": "Timon", "l": "Diamante", "i": 0.9825, "p": "Executivo", "f": "Municipal", "h": [0.4833, 0.678, 0.9729, 0.974, 0.9825]}, {"n": "Câmara Municipal de Porto Franco", "s": "https://www.cmportofranco.ma.gov.br/", "e": "Commit Soluções", "m": "Porto Franco", "l": "Diamante", "i": 0.9824, "p": "Legislativo", "f": "Municipal", "h": [0.8327, 0.7252, 0.891, 0.9025, 0.9824]}, {"n": "Câmara Municipal de Montes Altos", "s": "https://cmmontesaltos.ma.gov.br/", "e": "Commit Soluções", "m": "Montes Altos", "l": "Diamante", "i": 0.982, "p": "Legislativo", "f": "Municipal", "h": [0.4701, null, 0.8858, 0.9563, 0.982]}, {"n": "Câmara Municipal de Arame", "s": "https://cmarame.ma.gov.br/", "e": "Commit Soluções", "m": "Arame", "l": "Diamante", "i": 0.9814, "p": "Legislativo", "f": "Municipal", "h": [0.8446, 0.454, null, 0.8524, 0.9814]}, {"n": "Câmara Municipal de Fortaleza dos Nogueiras", "s": "https://cmfortalezadosnogueiras.ma.gov.br/", "e": "Commit Soluções", "m": "Fortaleza dos Nogueiras", "l": "Diamante", "i": 0.9784, "p": "Legislativo", "f": "Municipal", "h": [null, null, 0.9186, 0.7508, 0.9784]}, {"n": "Câmara Municipal de Formosa da Serra Negra", "s": "https://cmformosadaserranegra.ma.gov.br/", "e": "Commit Soluções", "m": "Formosa da Serra Negra", "l": "Diamante", "i": 0.9782, "p": "Legislativo", "f": "Municipal", "h": [0.255, null, null, 0.8846, 0.9782]}, {"n": "Câmara Municipal de Ribamar Fiquene", "s": "https://www.cmribamarfiquene.ma.gov.br/", "e": "Commit Soluções", "m": "Ribamar Fiquene", "l": "Diamante", "i": 0.9764, "p": "Legislativo", "f": "Municipal", "h": [0.6494, 0.6791, 0.914, 0.9655, 0.9764]}, {"n": "Prefeitura Municipal de São Pedro dos Crentes", "s": "https://www.saopedrodoscrentes.ma.gov.br/", "e": "Commit Soluções", "m": "São Pedro dos Crentes", "l": "Diamante", "i": 0.9755, "p": "Executivo", "f": "Municipal", "h": [0.8722, null, null, null, 0.9755]}, {"n": "Câmara Municipal de João Lisboa", "s": "https://www.camarajoaolisboa.ma.gov.br/", "e": "Commit Soluções", "m": "João Lisboa", "l": "Diamante", "i": 0.9747, "p": "Legislativo", "f": "Municipal", "h": [0.8526, 0.8076, 0.9344, 0.9537, 0.9747]}, {"n": "Câmara Municipal de Timon", "s": "https://timon.ma.leg.br/", "e": "Commit Soluções", "m": "Timon", "l": "Diamante", "i": 0.9747, "p": "Legislativo", "f": "Municipal", "h": [0.5857, 0, 0.5426, 0.8742, 0.9747]}, {"n": "Prefeitura Municipal de Fortaleza dos Nogueiras", "s": "https://www.fortalezadosnogueiras.ma.gov.br/", "e": "Commit Soluções", "m": "Fortaleza dos Nogueiras", "l": "Diamante", "i": 0.9735, "p": "Executivo", "f": "Municipal", "h": [0.5836, null, null, 0.405, 0.9735]}, {"n": "Câmara Municipal de Governador Edison Lobão", "s": "https://cmgovernadoredisonlobao.ma.gov.br/", "e": "Commit Soluções", "m": "Governador Edison Lobão", "l": "Diamante", "i": 0.9732, "p": "Legislativo", "f": "Municipal", "h": [null, 0.7078, 0.9633, 0.9156, 0.9732]}, {"n": "Câmara Municipal de Capinzal do Norte", "s": "https://www.cmcapinzaldonorte.ma.gov.br/", "e": "Commit Soluções", "m": "Capinzal do Norte", "l": "Diamante", "i": 0.9726, "p": "Legislativo", "f": "Municipal", "h": [null, null, null, 0.9543, 0.9726]}, {"n": "Prefeitura Municipal de Itinga do Maranhão", "s": "https://www.itinga.ma.gov.br/home", "e": "Commit Soluções", "m": "Itinga do Maranhão", "l": "Diamante", "i": 0.9725, "p": "Executivo", "f": "Municipal", "h": [0.7472, 0.7169, 0.7977, 0.9568, 0.9725]}, {"n": "Câmara Municipal de Imperatriz", "s": "https://www.camaraimperatriz.ma.gov.br/", "e": "Commit Soluções", "m": "Imperatriz", "l": "Diamante", "i": 0.9716, "p": "Legislativo", "f": "Municipal", "h": [null, 0.7866, 0.9813, 0.9803, 0.9716]}, {"n": "Prefeitura Municipal de Formosa da Serra Negra", "s": "https://www.formosadaserranegra.ma.gov.br/", "e": "Commit Soluções", "m": "Formosa da Serra Negra", "l": "Diamante", "i": 0.9714, "p": "Executivo", "f": "Municipal", "h": [0.4758, null, null, null, 0.9714]}, {"n": "Câmara Municipal de São Bento", "s": "https://cmsaobento.ma.gov.br/home", "e": "Commit Soluções", "m": "São Bento", "l": "Diamante", "i": 0.9706, "p": "Legislativo", "f": "Municipal", "h": [null, 0.5226, 0.5697, 0.876, 0.9706]}, {"n": "Prefeitura Municipal de Barra do Corda", "s": "https://barradocorda.ma.gov.br/", "e": "Commit Soluções", "m": "Barra do Corda", "l": "Diamante", "i": 0.9706, "p": "Executivo", "f": "Municipal", "h": [0.7026, 0.6468, 0.8441, null, 0.9706]}, {"n": "Prefeitura Municipal de Nova Colinas", "s": "https://www.novacolinas.ma.gov.br/", "e": "Commit Soluções", "m": "Nova Colinas", "l": "Diamante", "i": 0.9705, "p": "Executivo", "f": "Municipal", "h": [0.6171, null, null, null, 0.9705]}, {"n": "Prefeitura Municipal de Campestre do Maranhão", "s": "https://www.campestredomaranhao.ma.gov.br/", "e": "Commit Soluções", "m": "Campestre do Maranhão", "l": "Diamante", "i": 0.9693, "p": "Executivo", "f": "Municipal", "h": [0.7398, 0.7616, 0.9549, 0.952, 0.9693]}, {"n": "Prefeitura Municipal de Sítio Novo", "s": "https://www.sitionovo.ma.gov.br/", "e": "Commit Soluções", "m": "Sítio Novo", "l": "Diamante", "i": 0.9691, "p": "Executivo", "f": "Municipal", "h": [0.7695, 0.863, 0.9411, 0.9649, 0.9691]}, {"n": "Prefeitura Municipal de Sambaíba", "s": "https://www.sambaiba.ma.gov.br/", "e": "Assesi", "m": "Sambaíba", "l": "Diamante", "i": 0.9682, "p": "Executivo", "f": "Municipal", "h": [0.7249, 0.7464, 0.716, 0.925, 0.9682]}, {"n": "Prefeitura Municipal de São Pedro da Água Branca", "s": "https://www.saopedrodaaguabranca.ma.gov.br/", "e": "Commit Soluções", "m": "São Pedro da Água Branca", "l": "Diamante", "i": 0.9681, "p": "Executivo", "f": "Municipal", "h": [0.7567, 0.6943, 0.7391, 0.9102, 0.9681]}, {"n": "Prefeitura Municipal de Montes Altos", "s": "https://www.montesaltos.ma.gov.br/", "e": "Commit Soluções", "m": "Montes Altos", "l": "Diamante", "i": 0.9678, "p": "Executivo", "f": "Municipal", "h": [0.7993, 0.9644, 0.8795, 0.9281, 0.9678]}, {"n": "Câmara Municipal de Riachão", "s": "https://cmriachao.ma.gov.br/", "e": "Workcenter", "m": "Riachão", "l": "Diamante", "i": 0.9676, "p": "Legislativo", "f": "Municipal", "h": [0.8765, 0.5599, 0.8959, 0.7293, 0.9676]}, {"n": "Câmara Municipal de São Francisco do Brejão", "s": "https://www.cmsaofranciscodobrejao.ma.gov.br/", "e": "Commit Soluções", "m": "São Francisco do Brejão", "l": "Diamante", "i": 0.9656, "p": "Legislativo", "f": "Municipal", "h": [null, 0.5537, null, 0.951, 0.9656]}, {"n": "Câmara Municipal de São Pedro da Água Branca", "s": "https://www.cmsaopedrodaaguabranca.ma.gov.br/", "e": "Commit Soluções", "m": "São Pedro da Água Branca", "l": "Diamante", "i": 0.9649, "p": "Legislativo", "f": "Municipal", "h": [null, 0.8451, 0.9538, 0.9643, 0.9649]}, {"n": "Prefeitura Municipal de Anajatuba", "s": "https://www.anajatuba.ma.gov.br/", "e": "Assesi", "m": "Anajatuba", "l": "Diamante", "i": 0.9646, "p": "Executivo", "f": "Municipal", "h": [0.7435, 0.8047, 0.7558, 0.9657, 0.9646]}, {"n": "Câmara Municipal de Amarante do Maranhão", "s": "https://cmamarante.ma.gov.br/", "e": "Commit Soluções", "m": "Amarante do Maranhão", "l": "Diamante", "i": 0.9642, "p": "Legislativo", "f": "Municipal", "h": [null, null, null, 0.842, 0.9642]}, {"n": "Câmara Municipal de Conceição do Lago-Açu", "s": "https://cmconceicaodolagoacu.ma.gov.br/", "e": "Workcenter", "m": "Conceição do Lago-Açu", "l": "Diamante", "i": 0.9638, "p": "Legislativo", "f": "Municipal", "h": [0.3785, null, null, 0.773, 0.9638]}, {"n": "Câmara Municipal de Cajari", "s": "https://www.cmcajari.ma.gov.br/", "e": "Commit Soluções", "m": "Cajari", "l": "Diamante", "i": 0.9636, "p": "Legislativo", "f": "Municipal", "h": [0.4858, null, null, null, 0.9636]}, {"n": "Prefeitura Municipal de Lajeado Novo", "s": "https://www.lajeadonovo.ma.gov.br/", "e": "Commit Soluções", "m": "Lajeado Novo", "l": "Diamante", "i": 0.9618, "p": "Executivo", "f": "Municipal", "h": [0.5688, 0.7478, 0.9037, 0.9755, 0.9618]}, {"n": "Câmara Municipal de São Pedro dos Crentes", "s": "https://cmsaopedrodoscrentes.ma.gov.br/", "e": "Assesi", "m": "São Pedro dos Crentes", "l": "Diamante", "i": 0.9616, "p": "Legislativo", "f": "Municipal", "h": [null, 0.449, 0.6243, 0.8984, 0.9616]}, {"n": "Câmara Municipal de Gonçalves Dias", "s": "https://cmgoncalvesdias.ma.gov.br/", "e": "Workcenter", "m": "Gonçalves Dias", "l": "Diamante", "i": 0.9605, "p": "Legislativo", "f": "Municipal", "h": [0.6892, null, 0.7328, 0.8094, 0.9605]}, {"n": "Prefeitura Municipal de João Lisboa", "s": "https://www.joaolisboa.ma.gov.br/", "e": "Commit Soluções", "m": "João Lisboa", "l": "Diamante", "i": 0.9584, "p": "Executivo", "f": "Municipal", "h": [0.7955, 0.8815, 0.8767, 0.9536, 0.9584]}, {"n": "Câmara Municipal de Feira Nova do Maranhão", "s": "https://cmfeiranovadomaranhao.ma.gov.br/", "e": "Commit Soluções", "m": "Feira Nova do Maranhão", "l": "Diamante", "i": 0.9583, "p": "Legislativo", "f": "Municipal", "h": [0.5737, 0.6425, 0.5705, null, 0.9583]}, {"n": "Prefeitura Municipal de Viana", "s": "https://viana.ma.gov.br/", "e": "Workcenter", "m": "Viana", "l": "Diamante", "i": 0.9583, "p": "Executivo", "f": "Municipal", "h": [0.7424, 0.5819, 0.5426, 0.9242, 0.9583]}, {"n": "Câmara Municipal de Açailândia", "s": "https://www.cmacailandia.ma.gov.br/", "e": "Commit Soluções", "m": "Açailândia", "l": "Diamante", "i": 0.958, "p": "Legislativo", "f": "Municipal", "h": [0.751, 0.791, 0.9454, 0.9713, 0.958]}, {"n": "Câmara Municipal de Sítio Novo", "s": "https://www.sitionovo.ma.leg.br/", "e": "Commit Soluções", "m": "Sítio Novo", "l": "Diamante", "i": 0.9577, "p": "Legislativo", "f": "Municipal", "h": [null, 0.9624, 0.8868, 0.993, 0.9577]}, {"n": "Câmara Municipal de Davinópolis", "s": "https://www.cmdavinopolis.ma.gov.br/", "e": "Commit Soluções", "m": "Davinópolis", "l": "Diamante", "i": 0.9575, "p": "Legislativo", "f": "Municipal", "h": [null, 0.6442, null, 0.9108, 0.9575]}, {"n": "Câmara Municipal de São Mateus do Maranhão", "s": "https://cmsaomateus.ma.gov.br/", "e": "Assesi", "m": "São Mateus do Maranhão", "l": "Diamante", "i": 0.9573, "p": "Legislativo", "f": "Municipal", "h": [null, 0.6344, 0.5962, 0.4821, 0.9573]}, {"n": "Prefeitura Municipal de Buritirana", "s": "https://www.buritirana.ma.gov.br/", "e": "Commit Soluções", "m": "Buritirana", "l": "Diamante", "i": 0.9561, "p": "Executivo", "f": "Municipal", "h": [0.7678, 0.7882, 0.885, 0.9525, 0.9561]}, {"n": "Câmara Municipal de Peritoró", "s": "https://cmperitoro.ma.gov.br/", "e": "Workcenter", "m": "Peritoró", "l": "Diamante", "i": 0.9557, "p": "Legislativo", "f": "Municipal", "h": [null, null, 0.7728, 0.9373, 0.9557]}, {"n": "Prefeitura Municipal de São Raimundo das Mangabeiras", "s": "https://saoraimundodasmangabeiras.ma.gov.br/", "e": "Workcenter", "m": "São Raimundo das Mangabeiras", "l": "Diamante", "i": 0.9557, "p": "Executivo", "f": "Municipal", "h": [0.7286, null, null, 0.8678, 0.9557]}, {"n": "Assembleia Legislativa do Estado do Maranhão", "s": "https://www.al.ma.leg.br/sitealema/", "e": "TI própria", "m": "São Luís", "l": "Diamante", "i": 0.9554, "p": "Legislativo", "f": "Estadual", "h": [0.7371, null, null, 0.7932, 0.9554]}, {"n": "Prefeitura Municipal de Porto Franco", "s": "https://www.portofranco.ma.gov.br/", "e": "Commit Soluções", "m": "Porto Franco", "l": "Diamante", "i": 0.9554, "p": "Executivo", "f": "Municipal", "h": [0.5948, 0.7629, 0.9116, 0.9567, 0.9554]}, {"n": "Prefeitura Municipal de Governador Edison Lobão", "s": "https://www.governadoredisonlobao.ma.gov.br/", "e": "Commit Soluções", "m": "Governador Edison Lobão", "l": "Diamante", "i": 0.9553, "p": "Executivo", "f": "Municipal", "h": [0.8439, 0.4003, 0.6472, 0.7478, 0.9553]}, {"n": "Câmara Municipal de Paulino Neves", "s": "https://camarapaulinoneves.ma.gov.br/", "e": "Workcenter", "m": "Paulino Neves", "l": "Diamante", "i": 0.9552, "p": "Legislativo", "f": "Municipal", "h": [0.7247, 0.5747, 0.933, 0.8935, 0.9552]}, {"n": "Prefeitura Municipal de Cidelândia", "s": "https://www.cidelandia.ma.gov.br/", "e": "Commit Soluções", "m": "Cidelândia", "l": "Diamante", "i": 0.955, "p": "Executivo", "f": "Municipal", "h": [0.4944, 0.4413, null, 0.8973, 0.955]}, {"n": "Governo do Estado do Maranhão", "s": "https://www.ma.gov.br/", "e": "TI própria", "m": "São Luís", "l": "Diamante", "i": 0.9542, "p": "Executivo", "f": "Estadual", "h": [0.948, 0.8839, 0.9537, 0.9762, 0.9542]}, {"n": "Prefeitura Municipal de Feira Nova do Maranhão", "s": "https://feiranovadomaranhao.ma.gov.br/", "e": "Commit Soluções", "m": "Feira Nova do Maranhão", "l": "Diamante", "i": 0.9536, "p": "Executivo", "f": "Municipal", "h": [0.7955, null, 0.4591, 0.6404, 0.9536]}, {"n": "Câmara Municipal de Cedral", "s": "https://cmcedral.ma.gov.br/", "e": "Commit Soluções", "m": "Cedral", "l": "Diamante", "i": 0.9529, "p": "Legislativo", "f": "Municipal", "h": [0.6614, 0.6474, 0.7986, 0.8673, 0.9529]}, {"n": "Câmara Municipal de Buritirana", "s": "https://www.cmburitirana.ma.gov.br/", "e": "Commit Soluções", "m": "Buritirana", "l": "Diamante", "i": 0.9514, "p": "Legislativo", "f": "Municipal", "h": [0.6345, 0.5718, 0.9045, 0.9593, 0.9514]}, {"n": "Prefeitura Municipal de Imperatriz", "s": "https://transparencia.imperatriz.ma.gov.br/plano-municipal-educacao", "e": "Commit Soluções", "m": "Imperatriz", "l": "Diamante", "i": 0.9512, "p": "Executivo", "f": "Municipal", "h": [0.8067, 0.6321, 0.8821, 0.952, 0.9512]}, {"n": "Prefeitura Municipal de Passagem Franca", "s": "https://www.passagemfranca.ma.gov.br/", "e": "MaximizeGov", "m": "Passagem Franca", "l": "Diamante", "i": 0.9509, "p": "Executivo", "f": "Municipal", "h": [0.6357, 0.5392, 0.5752, 0.8539, 0.9509]}, {"n": "Prefeitura Municipal de Chapadinha", "s": "https://chapadinha.ma.gov.br/", "e": "MaximizeGov", "m": "Chapadinha", "l": "Diamante", "i": 0.9503, "p": "Executivo", "f": "Municipal", "h": [0.7011, null, null, null, 0.9503]}, {"n": "Prefeitura Municipal de Tasso Fragoso", "s": "https://www.tassofragoso.ma.gov.br/", "e": "Commit Soluções", "m": "Tasso Fragoso", "l": "Diamante", "i": 0.9503, "p": "Executivo", "f": "Municipal", "h": [0.5836, null, null, 0.953, 0.9503]}, {"n": "Câmara Municipal de Balsas", "s": "https://www.cmbalsas.ma.gov.br/", "e": "Assesi", "m": "Balsas", "l": "Ouro", "i": 0.9497, "p": "Legislativo", "f": "Municipal", "h": [null, 0.7912, 0.8941, 0.9673, 0.9497]}, {"n": "Câmara Municipal de Nova Colinas", "s": "https://cmnovacolinas.ma.gov.br/", "e": "Commit Soluções", "m": "Nova Colinas", "l": "Ouro", "i": 0.9487, "p": "Legislativo", "f": "Municipal", "h": [null, null, null, null, 0.9487]}, {"n": "Câmara Municipal de Colinas", "s": "https://cmcolinas.ma.gov.br/", "e": "Workcenter", "m": "Colinas", "l": "Ouro", "i": 0.9471, "p": "Legislativo", "f": "Municipal", "h": [0.6653, 0.6822, 0.8066, 0.8951, 0.9471]}, {"n": "Prefeitura Municipal de São Francisco do Brejão", "s": "https://www.saofranciscodobrejao.ma.gov.br/", "e": "Commit Soluções", "m": "São Francisco do Brejão", "l": "Ouro", "i": 0.9463, "p": "Executivo", "f": "Municipal", "h": [0.9033, 0.7539, 0.9413, 0.9584, 0.9463]}, {"n": "Prefeitura Municipal de São Luís", "s": "https://www.saoluis.ma.gov.br/", "e": "Instar Tecnologia", "m": "São Luís", "l": "Ouro", "i": 0.9444, "p": "Executivo", "f": "Municipal", "h": [0.6914, 0.7915, 0.9084, 0.9552, 0.9444]}, {"n": "Câmara Municipal de Santo Antônio dos Lopes", "s": "https://cmsantoantoniodoslopes.ma.gov.br/", "e": "Commit Soluções", "m": "Santo Antônio dos Lopes", "l": "Ouro", "i": 0.9432, "p": "Legislativo", "f": "Municipal", "h": [null, null, null, 0.9161, 0.9432]}, {"n": "Prefeitura Municipal de Cedral", "s": "https://www.cedral.ma.gov.br/", "e": "Commit Soluções", "m": "Cedral", "l": "Ouro", "i": 0.9425, "p": "Executivo", "f": "Municipal", "h": [0, null, null, 0.8376, 0.9425]}, {"n": "Prefeitura Municipal de Bacurituba", "s": "https://www.bacurituba.ma.gov.br/", "e": "Siganet", "m": "Bacurituba", "l": "Ouro", "i": 0.9409, "p": "Executivo", "f": "Municipal", "h": [0.5316, 0.6803, 0.5702, null, 0.9409]}, {"n": "Prefeitura Municipal de Balsas", "s": "https://www.balsas.ma.gov.br/", "e": "Assesi", "m": "Balsas", "l": "Ouro", "i": 0.939, "p": "Executivo", "f": "Municipal", "h": [0.8614, null, null, 0.8596, 0.939]}, {"n": "Prefeitura Municipal de Santa Luzia", "s": "https://www.santaluzia.ma.gov.br/", "e": "Commit Soluções", "m": "Santa Luzia", "l": "Ouro", "i": 0.936, "p": "Executivo", "f": "Municipal", "h": [0.6914, 0.5697, 0.6285, 0.7943, 0.936]}, {"n": "Câmara Municipal de Santa Luzia do Paruá", "s": "https://www.cmsantaluziadoparua.ma.gov.br/", "e": "Commit Soluções", "m": "Santa Luzia do Paruá", "l": "Ouro", "i": 0.9343, "p": "Legislativo", "f": "Municipal", "h": [0.5219, null, null, 0.9503, 0.9343]}, {"n": "Prefeitura Municipal de São Roberto", "s": "https://saoroberto.ma.gov.br/", "e": "Workcenter", "m": "São Roberto", "l": "Ouro", "i": 0.9338, "p": "Executivo", "f": "Municipal", "h": [0.7658, 0.5471, 0.7924, 0.95, 0.9338]}, {"n": "Prefeitura Municipal de Sucupira do Riachão", "s": "https://sucupiradoriachao.ma.gov.br/", "e": "FSS Entretenimentos LTDA-ME", "m": "Sucupira do Riachão", "l": "Ouro", "i": 0.9307, "p": "Executivo", "f": "Municipal", "h": [0.8401, 0.6372, null, 0.7238, 0.9307]}, {"n": "Câmara Municipal de Governador Nunes Freire", "s": "https://www.cmgovernadornunesfreire.ma.gov.br/", "e": "Assesi", "m": "Governador Nunes Freire", "l": "Ouro", "i": 0.9299, "p": "Legislativo", "f": "Municipal", "h": [0.9004, 0.9091, 0.7919, 0.6565, 0.9299]}, {"n": "Prefeitura Municipal de Presidente Sarney", "s": "https://presidentesarney.ma.gov.br/", "e": "Commit Soluções", "m": "Presidente Sarney", "l": "Ouro", "i": 0.9279, "p": "Executivo", "f": "Municipal", "h": [0.8077, 0.4539, 0.6222, 0.6018, 0.9279]}, {"n": "Prefeitura Municipal de Santa Luzia do Paruá", "s": "https://www.santaluziadoparua.ma.gov.br/", "e": "Assesi", "m": "Santa Luzia do Paruá", "l": "Ouro", "i": 0.9269, "p": "Executivo", "f": "Municipal", "h": [0.8253, 0.5273, 0.7207, 0.9732, 0.9269]}, {"n": "Câmara Municipal de Barra do Corda", "s": "https://cmbarradocorda.ma.gov.br/", "e": "Workcenter", "m": "Barra do Corda", "l": "Ouro", "i": 0.9261, "p": "Legislativo", "f": "Municipal", "h": [null, 0.8318, 0.9066, 0.8845, 0.9261]}, {"n": "Prefeitura Municipal de Amarante do Maranhão", "s": "https://www.amarante.ma.gov.br/", "e": "Commit Soluções", "m": "Amarante do Maranhão", "l": "Ouro", "i": 0.9248, "p": "Executivo", "f": "Municipal", "h": [0.6097, 0.7501, 0.8574, 0.8023, 0.9248]}, {"n": "Prefeitura Municipal de São João dos Patos", "s": "https://saojoaodospatos.ma.gov.br/", "e": "FSS Entretenimentos LTDA-ME", "m": "São João dos Patos", "l": "Ouro", "i": 0.9207, "p": "Executivo", "f": "Municipal", "h": [0.9182, 0.6126, 0.6868, 0.8055, 0.9207]}, {"n": "Câmara Municipal de Mirador", "s": "https://cmmirador.ma.gov.br/transparencia", "e": "Workcenter", "m": "Mirador", "l": "Ouro", "i": 0.9198, "p": "Legislativo", "f": "Municipal", "h": [0.6454, 0.7523, 0.8974, 0.9506, 0.9198]}, {"n": "Prefeitura Municipal de São João do Paraíso", "s": "https://www.saojoaodoparaiso.ma.gov.br/", "e": "Commit Soluções", "m": "São João do Paraíso", "l": "Ouro", "i": 0.9183, "p": "Executivo", "f": "Municipal", "h": [0.8067, 0.5406, 0.6845, 0.8863, 0.9183]}, {"n": "Câmara Municipal de Brejo de Areia", "s": "https://cmbrejodeareia.ma.gov.br", "e": "INLINEGOV SOLUCOES EM TECNOLOGIA", "m": "Brejo de Areia", "l": "Ouro", "i": 0.9179, "p": "Legislativo", "f": "Municipal", "h": [null, 0.5847, 0.7097, 0.7761, 0.9179]}, {"n": "Prefeitura Municipal de Tuntum", "s": "https://tuntum.ma.gov.br/", "e": "Assesi", "m": "Tuntum", "l": "Ouro", "i": 0.9159, "p": "Executivo", "f": "Municipal", "h": [0.2937, null, null, 0.9517, 0.9159]}, {"n": "Câmara Municipal de Codó", "s": "https://cmcodo.ma.gov.br/", "e": "Workcenter", "m": "Codó", "l": "Ouro", "i": 0.9123, "p": "Legislativo", "f": "Municipal", "h": [null, null, 0.7552, 0.8615, 0.9123]}, {"n": "Prefeitura Municipal de Paço do Lumiar", "s": "https://pacodolumiar.ma.gov.br/home", "e": "INLINEGOV SOLUCOES EM TECNOLOGIA", "m": "Paço do Lumiar", "l": "Ouro", "i": 0.9094, "p": "Executivo", "f": "Municipal", "h": [0.7191, 0.7136, 0.7181, 0.9245, 0.9094]}, {"n": "Prefeitura Municipal de Coroatá", "s": "https://coroata.ma.gov.br/", "e": "CR2", "m": "Coroatá", "l": "Ouro", "i": 0.9088, "p": "Executivo", "f": "Municipal", "h": [0.7658, null, null, 0.6741, 0.9088]}, {"n": "Prefeitura Municipal de Penalva", "s": "https://www.penalva.ma.gov.br/", "e": "Commit Soluções", "m": "Penalva", "l": "Ouro", "i": 0.9052, "p": "Executivo", "f": "Municipal", "h": [0.5651, null, null, null, 0.9052]}, {"n": "Câmara Municipal de São Luís", "s": "https://www.cmsaoluis.ma.gov.br/", "e": "Soluções Públicas", "m": "São Luís", "l": "Ouro", "i": 0.9046, "p": "Legislativo", "f": "Municipal", "h": [0.766, 0.0556, null, 0.7908, 0.9046]}, {"n": "Câmara Municipal de Magalhães de Almeida", "s": "https://camarademagalhaesdealmeida.ma.gov.br/", "e": "CR2", "m": "Magalhães de Almeida", "l": "Ouro", "i": 0.9015, "p": "Legislativo", "f": "Municipal", "h": [null, null, 0.6933, 0.9061, 0.9015]}, {"n": "Câmara Municipal de São João do Paraíso", "s": "https://cmsaojoaodoparaiso.ma.gov.br/", "e": "Commit Soluções", "m": "São João do Paraíso", "l": "Ouro", "i": 0.9015, "p": "Legislativo", "f": "Municipal", "h": [null, 0.5186, null, 0.9224, 0.9015]}, {"n": "Prefeitura Municipal de Serrano do Maranhão", "s": "https://www.serrano.ma.gov.br/", "e": "Não identificado", "m": "Serrano do Maranhão", "l": "Ouro", "i": 0.9012, "p": "Executivo", "f": "Municipal", "h": [0.5725, null, null, null, 0.9012]}, {"n": "Câmara Municipal de Caxias", "s": "https://cmcaxias.ma.gov.br/", "e": "Assesi", "m": "Caxias", "l": "Ouro", "i": 0.9008, "p": "Legislativo", "f": "Municipal", "h": [null, 0.5746, 0.5945, 0.5081, 0.9008]}, {"n": "Prefeitura Municipal de Itapecuru Mirim", "s": "https://www.itapecurumirim.ma.gov.br/", "e": "Assesi", "m": "Itapecuru Mirim", "l": "Ouro", "i": 0.8981, "p": "Executivo", "f": "Municipal", "h": [0.6952, 0.7188, 0.7967, 0.9486, 0.8981]}, {"n": "Câmara Municipal de Santa Filomena do Maranhão", "s": "https://cmsantafilomena.ma.gov.br/transparencia", "e": "Workcenter", "m": "Santa Filomena do Maranhão", "l": "Ouro", "i": 0.8966, "p": "Legislativo", "f": "Municipal", "h": [0.5777, 0.7584, 0.7843, 0.6373, 0.8966]}, {"n": "Câmara Municipal de Governador Luiz Rocha", "s": "https://cmgovernadorluizrocha.ma.gov.br/", "e": "DIGITAL COMERCIO E SERVIÇOS DE INFORMÁRICA", "m": "Governador Luiz Rocha", "l": "Ouro", "i": 0.8937, "p": "Legislativo", "f": "Municipal", "h": [0.8924, null, null, 0.5276, 0.8937]}, {"n": "Câmara Municipal de Pinheiro", "s": "www.cmpinheiro.ma.gov.br", "e": "Soluções Públicas", "m": "Pinheiro", "l": "Ouro", "i": 0.8932, "p": "Legislativo", "f": "Municipal", "h": [null, null, null, null, 0.8932]}, {"n": "Câmara Municipal de Cidelândia", "s": "https://www.cmcidelandia.ma.gov.br/", "e": "Commit Soluções", "m": "Cidelândia", "l": "Ouro", "i": 0.8916, "p": "Legislativo", "f": "Municipal", "h": [0.3227, 0.6669, null, 0.7923, 0.8916]}, {"n": "Prefeitura Municipal de Pio XII", "s": "https://pioxii.ma.gov.br/", "e": "Assesi", "m": "Pio XII", "l": "Ouro", "i": 0.8911, "p": "Executivo", "f": "Municipal", "h": [0.9071, 0.7178, 0.7989, 0.7868, 0.8911]}, {"n": "Prefeitura Municipal de Brejo de Areia", "s": "https://brejodeareia.ma.gov.br/", "e": "INLINEGOV SOLUCOES EM TECNOLOGIA", "m": "Brejo de Areia", "l": "Ouro", "i": 0.8884, "p": "Executivo", "f": "Municipal", "h": [0.7732, 0.534, 0.5271, 0.6903, 0.8884]}, {"n": "Câmara Municipal de Governador Eugênio Barros", "s": "https://cmgovernadoreugeniobarros.ma.gov.br/", "e": "Siganet", "m": "Governador Eugênio Barros", "l": "Ouro", "i": 0.8862, "p": "Legislativo", "f": "Municipal", "h": [0.8367, 0.3941, null, null, 0.8862]}, {"n": "Prefeitura Municipal de Raposa", "s": "https://raposa.ma.gov.br/", "e": "Workcenter", "m": "Raposa", "l": "Ouro", "i": 0.8852, "p": "Executivo", "f": "Municipal", "h": [0.8253, 0.5141, 0.7209, 0.71, 0.8852]}, {"n": "Câmara Municipal de Alto Parnaíba", "s": "https://camaradealtoparnaiba.ma.gov.br/", "e": "Workcenter", "m": "Alto Parnaíba", "l": "Ouro", "i": 0.8845, "p": "Legislativo", "f": "Municipal", "h": [null, 0.7448, 0.7459, 0.8747, 0.8845]}, {"n": "Câmara Municipal de Itapecuru Mirim", "s": "https://cmitapecurumirim.ma.gov.br/", "e": "Webservice Sistemas", "m": "Itapecuru Mirim", "l": "Ouro", "i": 0.881, "p": "Legislativo", "f": "Municipal", "h": [0.757, 0.6469, 0.6295, 0.3098, 0.881]}, {"n": "Câmara Municipal de São Roberto", "s": "https://cmsaoroberto.ma.gov.br/", "e": "Workcenter", "m": "São Roberto", "l": "Ouro", "i": 0.8783, "p": "Legislativo", "f": "Municipal", "h": [null, 0.78, 0.8517, 0.9109, 0.8783]}, {"n": "Câmara Municipal de Barão de Grajaú", "s": "https://cmbaraodegrajau.ma.gov.br/", "e": "Commit Soluções", "m": "Barão de Grajaú", "l": "Ouro", "i": 0.8713, "p": "Legislativo", "f": "Municipal", "h": [null, 0.57, 0.6828, 0.8159, 0.8713]}, {"n": "Prefeitura Municipal de São Mateus do Maranhão", "s": "https://www.saomateus.ma.gov.br/", "e": "Assesi", "m": "São Mateus do Maranhão", "l": "Ouro", "i": 0.8708, "p": "Executivo", "f": "Municipal", "h": [0.9108, 0.8254, 0.885, 0.7798, 0.8708]}, {"n": "Câmara Municipal de Dom Pedro", "s": "https://cmdompedro.ma.gov.br/", "e": "Workcenter", "m": "Dom Pedro", "l": "Ouro", "i": 0.8706, "p": "Legislativo", "f": "Municipal", "h": [0.1474, null, 0.6946, 0.8827, 0.8706]}, {"n": "Prefeitura Municipal de Grajaú", "s": "https://www.grajau.ma.gov.br/", "e": "Workcenter", "m": "Grajaú", "l": "Ouro", "i": 0.8699, "p": "Executivo", "f": "Municipal", "h": [0.7175, 0.4871, 0.9436, 0.8883, 0.8699]}, {"n": "Prefeitura Municipal de Benedito Leite", "s": "https://beneditoleite.ma.gov.br/", "e": "Workcenter", "m": "Benedito Leite", "l": "Ouro", "i": 0.8671, "p": "Executivo", "f": "Municipal", "h": [0.6353, 0, null, 0.466, 0.8671]}, {"n": "Câmara Municipal de Tasso Fragoso", "s": "https://cmtassofragoso.ma.gov.br/", "e": "Assesi", "m": "Tasso Fragoso", "l": "Ouro", "i": 0.8663, "p": "Legislativo", "f": "Municipal", "h": [null, 0.6781, 0.8368, 0.8284, 0.8663]}, {"n": "Câmara Municipal de Alto Alegre do Maranhão", "s": "https://cmaltoalegredomaranhao.ma.gov.br/", "e": "Assesi", "m": "Alto Alegre do Maranhão", "l": "Ouro", "i": 0.8625, "p": "Legislativo", "f": "Municipal", "h": [0.6733, 0.559, 0.4347, 0.7568, 0.8625]}, {"n": "Prefeitura Municipal de Primeira Cruz", "s": "https://primeiracruz.ma.gov.br/", "e": "Não identificado", "m": "Primeira Cruz", "l": "Ouro", "i": 0.8617, "p": "Executivo", "f": "Municipal", "h": [0.7361, 0.6579, 0.5985, 0.717, 0.8617]}, {"n": "Câmara Municipal de Santo Amaro do Maranhão", "s": "https://cmsantoamarodomaranhao.ma.gov.br/", "e": "Workcenter", "m": "Santo Amaro do Maranhão", "l": "Ouro", "i": 0.8582, "p": "Legislativo", "f": "Municipal", "h": [null, null, 0.5671, 0.7645, 0.8582]}, {"n": "Prefeitura Municipal do Maranhãozinho", "s": "https://maranhaozinho.ma.gov.br/home", "e": "INLINEGOV SOLUCOES EM TECNOLOGIA", "m": "Maranhãozinho", "l": "Ouro", "i": 0.8579, "p": "Executivo", "f": "Municipal", "h": [0.5502, null, 0.4537, null, 0.8579]}, {"n": "Prefeitura Municipal de Paraibano", "s": "https://paraibano.ma.gov.br/", "e": "Workcenter", "m": "Paraibano", "l": "Ouro", "i": 0.857, "p": "Executivo", "f": "Municipal", "h": [0.9219, 0.7829, 0.8798, 0.8928, 0.857]}, {"n": "Prefeitura Municipal de Colinas", "s": "https://colinas.ma.gov.br/", "e": "MaximizeGov", "m": "Colinas", "l": "Ouro", "i": 0.8566, "p": "Executivo", "f": "Municipal", "h": [0.4981, null, null, null, 0.8566]}, {"n": "Prefeitura Municipal de Barão de Grajaú", "s": "https://www.baraodegrajau.ma.gov.br/", "e": "MaximizeGov", "m": "Barão de Grajaú", "l": "Ouro", "i": 0.8536, "p": "Executivo", "f": "Municipal", "h": [0.7807, 0.6384, 0.6801, null, 0.8536]}, {"n": "Câmara Municipal de Esperantinópolis", "s": "https://cmesperantinopolis.ma.gov.br/", "e": "Workcenter", "m": "Esperantinópolis", "l": "Ouro", "i": 0.8513, "p": "Legislativo", "f": "Municipal", "h": [null, null, null, 0.623, 0.8513]}, {"n": "Câmara Municipal de Trizidela do Vale", "s": "https://cmtrizideladovale.ma.gov.br/", "e": "Assesi", "m": "Trizidela do Vale", "l": "Ouro", "i": 0.8513, "p": "Legislativo", "f": "Municipal", "h": [null, 0.7663, 0.8344, 0.8355, 0.8513]}, {"n": "Câmara Municipal de Pindaré-Mirim", "s": "https://cmpindaremirim.ma.gov.br/", "e": "Workcenter", "m": "Pindaré-Mirim", "l": "Ouro", "i": 0.851, "p": "Legislativo", "f": "Municipal", "h": [0.8347, 0.7237, 0.7293, 0.8162, 0.851]}, {"n": "Câmara Municipal de São Raimundo das Mangabeiras", "s": "https://camarademangabeiras.ma.gov.br/", "e": "Workcenter", "m": "São Raimundo das Mangabeiras", "l": "Ouro", "i": 0.851, "p": "Legislativo", "f": "Municipal", "h": [null, null, null, 0.7595, 0.851]}, {"n": "Câmara Municipal de Pastos Bons", "s": "https://www.cmpastosbons.ma.gov.br/", "e": "MaximizeGov", "m": "Pastos Bons", "l": "Ouro", "i": 0.8502, "p": "Legislativo", "f": "Municipal", "h": [0.749, null, null, null, 0.8502]}, {"n": "Câmara Municipal de Joselândia", "s": "https://cmjoselandia.ma.gov.br/", "e": "Workcenter", "m": "Joselândia", "l": "Ouro", "i": 0.85, "p": "Legislativo", "f": "Municipal", "h": [null, 0.7151, 0.7817, 0.8836, 0.85]}, {"n": "Prefeitura Municipal de Buriti Bravo", "s": "https://www.buritibravo.ma.gov.br/", "e": "Workcenter", "m": "Buriti Bravo", "l": "Prata", "i": 0.8472, "p": "Executivo", "f": "Municipal", "h": [0.8996, 0.5307, 0.7249, 0.8768, 0.8472]}, {"n": "Câmara Municipal de Buriti Bravo", "s": "https://cmburitibravo.ma.gov.br/", "e": "Workcenter", "m": "Buriti Bravo", "l": "Prata", "i": 0.8465, "p": "Legislativo", "f": "Municipal", "h": [0.6215, 0.4533, 0.5227, 0.7528, 0.8465]}, {"n": "Prefeitura Municipal de Arari", "s": "https://arari.ma.gov.br/", "e": "Workcenter", "m": "Arari", "l": "Prata", "i": 0.8457, "p": "Executivo", "f": "Municipal", "h": [0.6283, null, null, 0.4721, 0.8457]}, {"n": "Câmara Municipal de Nova Iorque", "s": "https://cmnovaiorque.ma.gov.br/", "e": "Workcenter", "m": "Nova Iorque", "l": "Prata", "i": 0.8455, "p": "Legislativo", "f": "Municipal", "h": [0.7331, 0.7507, 0.797, 0.8818, 0.8455]}, {"n": "Prefeitura Municipal de Centro do Guilherme", "s": "https://centrodoguilherme.ma.gov.br/home", "e": "INLINEGOV SOLUCOES EM TECNOLOGIA", "m": "Centro do Guilherme", "l": "Prata", "i": 0.8422, "p": "Executivo", "f": "Municipal", "h": [0.6914, null, 0.338, null, 0.8422]}, {"n": "Câmara Municipal de Araioses", "s": "https://cmaraioses.ma.gov.br/", "e": "Assesi", "m": "Araioses", "l": "Prata", "i": 0.8411, "p": "Legislativo", "f": "Municipal", "h": [0.6096, 0.6075, 0.6667, 0.956, 0.8411]}, {"n": "Prefeitura Municipal de Dom Pedro", "s": "https://dompedro.ma.gov.br/transparencia/diario-oficial/", "e": "MaximizeGov", "m": "Dom Pedro", "l": "Prata", "i": 0.839, "p": "Executivo", "f": "Municipal", "h": [0.7844, null, null, 0.8583, 0.839]}, {"n": "Prefeitura Municipal de Vitorino Freire", "s": "https://vitorinofreire.ma.gov.br/", "e": "Webservice Sistemas", "m": "Vitorino Freire", "l": "Prata", "i": 0.836, "p": "Executivo", "f": "Municipal", "h": [0.4811, 0.6214, 0.6345, null, 0.836]}, {"n": "Prefeitura Municipal de Pastos Bons", "s": "https://www.pastosbons.ma.gov.br/", "e": "MaximizeGov", "m": "Pastos Bons", "l": "Prata", "i": 0.834, "p": "Executivo", "f": "Municipal", "h": [0.9071, 0.6235, null, 0.7537, 0.834]}, {"n": "Prefeitura Municipal de Magalhães de Almeida", "s": "https://magalhaesdealmeida.ma.gov.br/", "e": "Workcenter", "m": "Magalhães de Almeida", "l": "Prata", "i": 0.8332, "p": "Executivo", "f": "Municipal", "h": [0.6543, 0.5613, 0.6767, 0.8154, 0.8332]}, {"n": "Prefeitura Municipal de Bacabal", "s": "https://www.bacabal.ma.gov.br/", "e": "Agência Plus", "m": "Bacabal", "l": "Prata", "i": 0.8311, "p": "Executivo", "f": "Municipal", "h": [0.6394, 0.4447, 0.7408, null, 0.8311]}, {"n": "Prefeitura Municipal de Coelho Neto", "s": "https://coelhoneto.ma.gov.br/", "e": "FSS Entretenimentos LTDA-ME", "m": "Coelho Neto", "l": "Prata", "i": 0.8309, "p": "Executivo", "f": "Municipal", "h": [0.8364, 0.6354, 0.8603, 0.7679, 0.8309]}, {"n": "Prefeitura Municipal de Cachoeira Grande", "s": "https://cachoeiragrande.ma.gov.br/home", "e": "INLINEGOV SOLUCOES EM TECNOLOGIA", "m": "Cachoeira Grande", "l": "Prata", "i": 0.8295, "p": "Executivo", "f": "Municipal", "h": [0.829, 0.5983, 0.6324, 0.7901, 0.8295]}, {"n": "Prefeitura Municipal de Santo Antônio dos Lopes", "s": "https://www.stoantoniodoslopes.ma.gov.br/", "e": "Agência Plus", "m": "Santo Antônio dos Lopes", "l": "Prata", "i": 0.8273, "p": "Executivo", "f": "Municipal", "h": [0.8539, null, null, 0.5558, 0.8273]}, {"n": "Câmara Municipal de Buriticupu", "s": "https://www.cmburiticupu.ma.gov.br/", "e": "Assesi", "m": "Buriticupu", "l": "Prata", "i": 0.8197, "p": "Legislativo", "f": "Municipal", "h": [0.6008, null, 0.6405, 0.6371, 0.8197]}, {"n": "Prefeitura Municipal de Santa Helena", "s": "https://santahelena.ma.gov.br/", "e": "Workcenter", "m": "Santa Helena", "l": "Prata", "i": 0.8192, "p": "Executivo", "f": "Municipal", "h": [0.8178, 0.6509, 0.8889, 0.8752, 0.8192]}, {"n": "Câmara Municipal de Raposa", "s": "https://cmraposa.ma.gov.br/", "e": "Workcenter", "m": "Raposa", "l": "Prata", "i": 0.8123, "p": "Legislativo", "f": "Municipal", "h": [0.4561, 0.5855, 0.8772, 0.7903, 0.8123]}, {"n": "Prefeitura Municipal de Codó", "s": "https://www.codo.ma.gov.br/", "e": "Workcenter", "m": "Codó", "l": "Prata", "i": 0.8102, "p": "Executivo", "f": "Municipal", "h": [0.7881, null, 0.521, 0.7227, 0.8102]}, {"n": "Prefeitura Municipal de Alto Parnaíba", "s": "https://administracaopublica.com.br/lgpd?token=b64b72c18bc14589f24481ca76b3c6df81eafa30", "e": "Workcenter", "m": "Alto Parnaíba", "l": "Prata", "i": 0.81, "p": "Executivo", "f": "Municipal", "h": [0.8736, null, null, 0.6666, 0.81]}, {"n": "Prefeitura Municipal de Carolina", "s": "https://carolina.ma.gov.br/", "e": "Assesi", "m": "Carolina", "l": "Prata", "i": 0.8071, "p": "Executivo", "f": "Municipal", "h": [0.7175, null, null, 0.821, 0.8071]}, {"n": "Prefeitura Municipal de Bom Jesus das Selvas", "s": "https://administracaopublica.com.br/admpublica/diarias-e-legislacao?token=1ffcea7007fcd2e4635e427841f4914f42375691", "e": "Workcenter", "m": "Bom Jesus das Selvas", "l": "Prata", "i": 0.8057, "p": "Executivo", "f": "Municipal", "h": [0.9033, 0.6084, 0.3928, 0.8083, 0.8057]}, {"n": "Câmara Municipal de Sucupira do Norte", "s": "https://cmsucupiradonorte.ma.gov.br/", "e": "Workcenter", "m": "Sucupira do Norte", "l": "Prata", "i": 0.8054, "p": "Legislativo", "f": "Municipal", "h": [null, 0.6039, 0.5036, 0.9163, 0.8054]}, {"n": "Câmara Municipal de Vitorino Freire", "s": "https://cmvitorinofreire.ma.gov.br/", "e": "Webservice Sistemas", "m": "Vitorino Freire", "l": "Prata", "i": 0.8046, "p": "Legislativo", "f": "Municipal", "h": [null, null, 0.7256, 0.7301, 0.8046]}, {"n": "Câmara Municipal de Turilândia", "s": "https://cmturilandia.ma.gov.br/", "e": "Workcenter", "m": "Turilândia", "l": "Prata", "i": 0.8045, "p": "Legislativo", "f": "Municipal", "h": [null, null, 0.8317, 0.9279, 0.8045]}, {"n": "Prefeitura Municipal de Arame", "s": "https://arame.ma.gov.br/", "e": "Assesi", "m": "Arame", "l": "Prata", "i": 0.8039, "p": "Executivo", "f": "Municipal", "h": [0.7732, 0.6169, 0.7038, 0.9189, 0.8039]}, {"n": "Câmara Municipal de Olho d'Água das Cunhãs", "s": "https://cmolhodaguadascunhas.ma.gov.br/", "e": "Workcenter", "m": "Olho d'Água das Cunhãs", "l": "Prata", "i": 0.8019, "p": "Legislativo", "f": "Municipal", "h": [0.2789, null, null, 0.6122, 0.8019]}, {"n": "Câmara Municipal de São Luís Gonzaga do Maranhão", "s": "https://www.cmsaoluisgonzaga.ma.gov.br/", "e": "Assesi", "m": "São Luís Gonzaga do Maranhão", "l": "Prata", "i": 0.7972, "p": "Legislativo", "f": "Municipal", "h": [null, 0.6885, 0.716, 0.7033, 0.7972]}, {"n": "Prefeitura Municipal de Fernando Falcão", "s": "https://www.fernandofalcao.ma.gov.br/", "e": "Siganet", "m": "Fernando Falcão", "l": "Prata", "i": 0.7904, "p": "Executivo", "f": "Municipal", "h": [0.8922, 0.5942, 0.8703, 0.8402, 0.7904]}, {"n": "Câmara Municipal de Humberto de Campos", "s": "https://cmhumbertodecampos.ma.gov.br/", "e": "Workcenter", "m": "Humberto de Campos", "l": "Prata", "i": 0.789, "p": "Legislativo", "f": "Municipal", "h": [0.8645, null, 0.6874, 0.7997, 0.789]}, {"n": "Câmara Municipal de Paraibano", "s": "https://paraibano.ma.leg.br/", "e": "Workcenter", "m": "Paraibano", "l": "Prata", "i": 0.7877, "p": "Legislativo", "f": "Municipal", "h": [0.9323, 0.5855, 0.822, 0.826, 0.7877]}, {"n": "Prefeitura Municipal de Presidente Juscelino", "s": "https://presidentejuscelino.ma.gov.br/home", "e": "INLINEGOV SOLUCOES EM TECNOLOGIA", "m": "Presidente Juscelino", "l": "Prata", "i": 0.7874, "p": "Executivo", "f": "Municipal", "h": [0.7658, 0.5492, 0.7526, 0.8444, 0.7874]}, {"n": "Câmara Municipal de Guimarães", "s": "https://cmguimaraes.ma.gov.br/", "e": "Workcenter", "m": "Guimarães", "l": "Prata", "i": 0.7824, "p": "Legislativo", "f": "Municipal", "h": [null, 0.511, 0.5565, 0.4373, 0.7824]}, {"n": "Câmara Municipal de Passagem Franca", "s": "https://cmpassagemfranca.ma.gov.br/", "e": "Workcenter", "m": "Passagem Franca", "l": "Prata", "i": 0.7803, "p": "Legislativo", "f": "Municipal", "h": [null, 0.7, 0.6517, 0.7105, 0.7803]}, {"n": "Prefeitura Municipal de Caxias", "s": "https://transparencia.caxias.ma.gov.br/transparencia", "e": "MaximizeGov", "m": "Caxias", "l": "Prata", "i": 0.7747, "p": "Executivo", "f": "Municipal", "h": [0.6208, null, null, null, 0.7747]}, {"n": "Prefeitura Municipal de Miranda do Norte", "s": "https://mirandadonorte.ma.gov.br/", "e": "Webservice Sistemas", "m": "Miranda do Norte", "l": "Prata", "i": 0.7647, "p": "Executivo", "f": "Municipal", "h": [0.7584, null, 0.7004, 0.6623, 0.7647]}, {"n": "Prefeitura Municipal de Capinzal do Norte", "s": "https://www.capinzaldonorte.ma.gov.br/", "e": "MaximizeGov", "m": "Capinzal do Norte", "l": "Prata", "i": 0.7646, "p": "Executivo", "f": "Municipal", "h": [0.6877, null, null, 0.6711, 0.7646]}, {"n": "Prefeitura Municipal de Alto Alegre do Pindaré", "s": "https://www.altoalegredopindare.ma.gov.br/", "e": "Commit Soluções", "m": "Alto Alegre do Pindaré", "l": "Prata", "i": 0.7633, "p": "Executivo", "f": "Municipal", "h": [0.803, null, null, null, 0.7633]}, {"n": "Prefeitura Municipal de Cantanhede", "s": "https://www.cantanhede.ma.gov.br/", "e": "Assesi", "m": "Cantanhede", "l": "Prata", "i": 0.7622, "p": "Executivo", "f": "Municipal", "h": [0.7063, 0.6866, 0.7152, 0.858, 0.7622]}, {"n": "Prefeitura Municipal de Mirador", "s": "https://mirador.ma.gov.br/", "e": "Workcenter", "m": "Mirador", "l": "Prata", "i": 0.7535, "p": "Executivo", "f": "Municipal", "h": [0.7621, 0.4363, 0.288, null, 0.7535]}, {"n": "Câmara Municipal de Serrano do Maranhão", "s": "https://cmserranodomaranhao.ma.gov.br/", "e": "Workcenter", "m": "Serrano do Maranhão", "l": "Prata", "i": 0.7518, "p": "Legislativo", "f": "Municipal", "h": [null, null, 0.5007, 0.538, 0.7518]}]};
+const rows = [];
+for (const uf of ["PI","MA"]) for (const r of DATA[uf]) rows.push({...r, uf});
+const isW = r => /workcenter/i.test(r.e||"");
+const W = rows.filter(isW), O = rows.filter(r=>!isW(r));
+const fmt = (v,d=1)=> (v*100).toLocaleString("pt-BR",{minimumFractionDigits:d,maximumFractionDigits:d});
+const cnt = (arr,f)=>arr.filter(f).length;
+const avg = a => a.reduce((s,x)=>s+x,0)/a.length;
+const tiers = ["Diamante","Ouro","Prata"];
+const tierColor = {Diamante:"var(--diamante)",Ouro:"var(--ouro)",Prata:"var(--prata)"};
+const byUF = uf => rows.filter(r=>r.uf===uf), wUF = uf => W.filter(r=>r.uf===uf);
+const esc = s => String(s??"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+
+/* HERO */
+const tc = Object.fromEntries(tiers.map(t=>[t,cnt(W,r=>r.l===t)]));
+document.getElementById("sealNum").textContent = W.length;
+document.getElementById("lede").textContent =
+  `São ${W.length} das ${rows.length} entidades certificáveis: ${wUF("MA").length} no Maranhão e ${wUF("PI").length} no Piauí. Entre as empresas que atendem os dois estados, a Workcenter é a que tem mais entidades certificáveis.`;
+document.getElementById("heroChips").innerHTML = tiers.map(t=>`<span class="chip"><i style="background:${tierColor[t]}"></i>${tc[t]} ${t}</span>`).join("")
+  + `<span class="chip">${cnt(W,r=>r.p==="Legislativo")} câmaras · ${cnt(W,r=>r.p==="Executivo")} prefeituras</span>`;
+(function seal(){
+  const svg=document.getElementById("sealSvg"), R=160, C=2*Math.PI*R, gap=6; let off=0, h="";
+  h+=`<circle cx="200" cy="200" r="${R}" fill="none" stroke="var(--line)" stroke-width="22"/>`;
+  h+=`<circle cx="200" cy="200" r="${R-34}" fill="none" stroke="var(--line)" stroke-width="1" stroke-dasharray="2 6"/>`;
+  tiers.forEach((t,i)=>{
+    const len=C*tc[t]/W.length-gap;
+    h+=`<circle class="arc" cx="200" cy="200" r="${R}" fill="none" stroke="${tierColor[t]}" stroke-width="22" stroke-linecap="round"
+      stroke-dasharray="${len} ${C}" stroke-dashoffset="0" style="--len:${len};animation-delay:${i*.18}s" transform="rotate(${-90+off/C*360} 200 200)"><title>${tc[t]} ${t}</title></circle>`;
+    off+=len+gap;
+  });
+  svg.innerHTML=h;
+})();
+
+/* BENTO */
+const shareMA = wUF("MA").length/byUF("MA").length, sharePI = wUF("PI").length/byUF("PI").length;
+const g25 = W.filter(r=>r.h[3]!=null), gain = avg(g25.map(r=>r.i-r.h[3]));
+const up = W.filter(r=>r.h[3]!=null && r.i>r.h[3]).length;
+const best = [...W].sort((a,b)=>b.i-a.i)[0];
+const leg = cnt(W,r=>r.p==="Legislativo");
+const camaras = rows.filter(r=>r.p==="Legislativo");
+document.getElementById("bento").innerHTML = `
+  <div class="tile hl t1">
+    <div class="k">Participação nas certificáveis</div>
+    <div class="v num">${fmt(W.length/rows.length,0)}%<small> das ${rows.length}</small></div>
+    <p>${W.length} entidades em portal Workcenter, distribuídas por ${new Set(W.map(r=>r.m)).size} municípios.</p>
+    <div class="ufbar">
+      <div class="ufrow"><div class="lab"><span>Maranhão</span><span class="num">${wUF("MA").length} de ${byUF("MA").length} · ${fmt(shareMA,0)}%</span></div><div class="track" style="background:rgba(255,255,255,.22)"><b style="width:${shareMA*100}%;background:#fff"></b></div></div>
+      <div class="ufrow"><div class="lab"><span>Piauí</span><span class="num">${wUF("PI").length} de ${byUF("PI").length} · ${fmt(sharePI,0)}%</span></div><div class="track" style="background:rgba(255,255,255,.22)"><b style="width:${sharePI*100}%;background:#fff"></b></div></div>
+    </div>
+  </div>
+  <div class="tile t2">
+    <div class="k">Selos Workcenter</div>
+    <div class="v num">${tc.Diamante}<small> Diamante · ${tc.Ouro} Ouro · ${tc.Prata} Prata</small></div>
+    <div class="tiers">${tiers.map(t=>`<span style="flex:${tc[t]};background:${tierColor[t]}"></span>`).join("")}</div>
+  </div>
+  <div class="tile t3">
+    <div class="k">Avanço 2025 → 2026</div>
+    <div class="v num">+${fmt(gain)}<small> pontos</small></div>
+    <p>Média de ganho de índice. ${up} de ${g25.length} entidades subiram.</p>
+  </div>
+  <div class="tile t4">
+    <div class="k">Essenciais</div>
+    <div class="v num">100%</div>
+    <p>em todas</p>
+  </div>
+  <div class="tile t5">
+    <div class="k">Força no Legislativo</div>
+    <div class="v num">${leg}<small> câmaras</small></div>
+    <p>${fmt(leg/camaras.length,0)}% das ${camaras.length} câmaras certificáveis dos dois estados.</p>
+  </div>
+  <div class="tile t6">
+    <div class="k">Maior índice Workcenter</div>
+    <div class="v num">${fmt(best.i,2)}%</div>
+    <p>${esc(best.n)} (${best.uf})</p>
+  </div>
+  <div class="tile t7">
+    <div class="k">Índice médio 2026</div>
+    <div class="v num">${fmt(avg(W.map(r=>r.i)))}%</div>
+    <p>Workcenter. A média das demais empresas é ${fmt(avg(O.map(r=>r.i)))}%.</p>
+  </div>`;
+
+/* COMPARATIVO 2025 x 2026 */
+(function(){
+  const P25 = [{"n": "Câmara Municipal de Santa Helena", "uf": "MA", "m": "Santa Helena", "i": 0.955, "l": "Diamante", "p": "Legislativo"}, {"n": "Câmara Municipal de Mirador", "uf": "MA", "m": "Mirador", "i": 0.9506, "l": "Diamante", "p": "Legislativo"}, {"n": "Prefeitura Municipal de São Roberto", "uf": "MA", "m": "São Roberto", "i": 0.95, "l": "Diamante", "p": "Executivo"}, {"n": "Câmara Municipal de Peritoró", "uf": "MA", "m": "Peritoró", "i": 0.9373, "l": "Ouro", "p": "Legislativo"}, {"n": "Câmara Municipal de Turilândia", "uf": "MA", "m": "Turilândia", "i": 0.9279, "l": "Ouro", "p": "Legislativo"}, {"n": "Prefeitura Municipal de Viana", "uf": "MA", "m": "Viana", "i": 0.9242, "l": "Ouro", "p": "Executivo"}, {"n": "Câmara Municipal de Barreirinhas", "uf": "MA", "m": "Barreirinhas", "i": 0.9184, "l": "Ouro", "p": "Legislativo"}, {"n": "Câmara Municipal de Sucupira do Norte", "uf": "MA", "m": "Sucupira do Norte", "i": 0.9163, "l": "Ouro", "p": "Legislativo"}, {"n": "Câmara Municipal de Colinas", "uf": "MA", "m": "Colinas", "i": 0.8951, "l": "Ouro", "p": "Legislativo"}, {"n": "Câmara Municipal de Paulino Neves", "uf": "MA", "m": "Paulino Neves", "i": 0.8935, "l": "Ouro", "p": "Legislativo"}, {"n": "Prefeitura Municipal de Paraibano", "uf": "MA", "m": "Paraibano", "i": 0.8928, "l": "Ouro", "p": "Executivo"}, {"n": "Prefeitura Municipal de Grajaú", "uf": "MA", "m": "Grajaú", "i": 0.8883, "l": "Ouro", "p": "Executivo"}, {"n": "Câmara Municipal de Nova Iorque", "uf": "MA", "m": "Nova Iorque", "i": 0.8818, "l": "Ouro", "p": "Legislativo"}, {"n": "Prefeitura Municipal de Buriti Bravo", "uf": "MA", "m": "Buriti Bravo", "i": 0.8768, "l": "Ouro", "p": "Executivo"}, {"n": "Prefeitura Municipal de Santa Helena", "uf": "MA", "m": "Santa Helena", "i": 0.8752, "l": "Ouro", "p": "Executivo"}, {"n": "Câmara Municipal de Alto Parnaíba", "uf": "MA", "m": "Alto Parnaíba", "i": 0.8747, "l": "Ouro", "p": "Legislativo"}, {"n": "Câmara Municipal de Governador Archer", "uf": "MA", "m": "Governador Archer", "i": 0.871, "l": "Ouro", "p": "Legislativo"}, {"n": "Prefeitura Municipal de São Raimundo das Mangabeiras", "uf": "MA", "m": "São Raimundo das Mangabeiras", "i": 0.8678, "l": "Ouro", "p": "Executivo"}, {"n": "Câmara Municipal de Paraibano", "uf": "MA", "m": "Paraibano", "i": 0.826, "l": "Prata", "p": "Legislativo"}, {"n": "Câmara Municipal de Miguel Alves", "uf": "PI", "m": "Miguel Alves", "i": 0.825, "l": "Prata", "p": "Legislativo"}, {"n": "Câmara Municipal de Gonçalves Dias", "uf": "MA", "m": "Gonçalves Dias", "i": 0.8094, "l": "Prata", "p": "Legislativo"}, {"n": "Câmara Municipal de Jatobá", "uf": "MA", "m": "Jatobá", "i": 0.7935, "l": "Prata", "p": "Legislativo"}, {"n": "Câmara Municipal de Raposa", "uf": "MA", "m": "Raposa", "i": 0.7903, "l": "Prata", "p": "Legislativo"}, {"n": "Câmara Municipal de Grajaú", "uf": "MA", "m": "Grajaú", "i": 0.7785, "l": "Prata", "p": "Legislativo"}, {"n": "Prefeitura Municipal de São João Batista", "uf": "MA", "m": "São João Batista", "i": 0.7769, "l": "Prata", "p": "Executivo"}, {"n": "Câmara Municipal de Conceição do Lago-Açu", "uf": "MA", "m": "Conceição do Lago-Açu", "i": 0.773, "l": "Prata", "p": "Legislativo"}, {"n": "Câmara Municipal de Santo Amaro do Maranhão", "uf": "MA", "m": "Santo Amaro do Maranhão", "i": 0.7645, "l": "Prata", "p": "Legislativo"}, {"n": "Prefeitura Municipal de Turilândia", "uf": "MA", "m": "Turilândia", "i": 0.7643, "l": "Prata", "p": "Executivo"}, {"n": "Câmara Municipal de São Raimundo das Mangabeiras", "uf": "MA", "m": "São Raimundo das Mangabeiras", "i": 0.7595, "l": "Prata", "p": "Legislativo"}, {"n": "Prefeitura Municipal de Água Doce do Maranhão", "uf": "MA", "m": "Água Doce do Maranhão", "i": 0.7553, "l": "Prata", "p": "Executivo"}, {"n": "Câmara Municipal de Buriti Bravo", "uf": "MA", "m": "Buriti Bravo", "i": 0.7528, "l": "Prata", "p": "Legislativo"}];
+  const key = s => s.normalize("NFD").replace(/\p{Diacritic}/gu,"").toLowerCase().replace(/-/g," ").trim();
+  const m26 = new Map(W.map(r=>[key(r.n),r])), k25 = new Set(P25.map(r=>key(r.n)));
+  const rk = {Diamante:3,Ouro:2,Prata:1};
+  const pairs = P25.filter(r=>m26.has(key(r.n))).map(a=>({a,b:m26.get(key(a.n))}));
+  const upL = pairs.filter(p=>rk[p.b.l]>rk[p.a.l]), same = pairs.filter(p=>rk[p.b.l]===rk[p.a.l]), dn = pairs.filter(p=>rk[p.b.l]<rk[p.a.l]);
+  const out = P25.filter(r=>!m26.has(key(r.n))), news = W.filter(r=>!k25.has(key(r.n)));
+  const c25 = t=>P25.filter(r=>r.l===t).length, c26 = t=>W.filter(r=>r.l===t).length;
+  const a25 = avg(P25.map(r=>r.i)), a26 = avg(W.map(r=>r.i));
+  const pct = (a,b)=>Math.round((b-a)/a*100);
+  const delta = (a,b,u="")=>{const d=b-a;return `<span class="delta ${d>0?"up":d<0?"down":""}">${d>0?"+":""}${u?fmtPt(d):d}${u}</span>`};
+  const fmtPt = d=>(d*100).toLocaleString("pt-BR",{minimumFractionDigits:1,maximumFractionDigits:1});
+  document.getElementById("cmpTitle").textContent = `De ${P25.length} para ${W.length} entidades certificáveis em um ciclo`;
+  const box=(k,a,b,extra,hl)=>`<div class="cmp ${hl?"hl":""}"><div class="k">${k}</div><div class="ft"><span class="from num">${a}</span><span class="arrow">→</span><span class="to num">${b}</span></div>${extra}</div>`;
+  document.getElementById("cmpTop").innerHTML =
+    box("Entidades certificáveis",P25.length,W.length,`<span class="delta up">+${W.length-P25.length} · +${pct(P25.length,W.length)}%</span>`,true)+
+    box("Maranhão",P25.filter(r=>r.uf==="MA").length,W.filter(r=>r.uf==="MA").length,delta(P25.filter(r=>r.uf==="MA").length,W.filter(r=>r.uf==="MA").length))+
+    box("Piauí",P25.filter(r=>r.uf==="PI").length,W.filter(r=>r.uf==="PI").length,delta(P25.filter(r=>r.uf==="PI").length,W.filter(r=>r.uf==="PI").length))+
+    box("Índice médio",fmt(a25)+"%",fmt(a26)+"%",delta(a25,a26," pt"));
+  const mx = Math.max(...tiers.map(t=>Math.max(c25(t),c26(t))));
+  document.getElementById("cmpBars").innerHTML = tiers.map(t=>`<div class="pair">
+      <span class="t"><i style="background:${tierColor[t]}"></i>${t}</span>
+      <span class="pb"><b style="width:${c25(t)/mx*66}%;background:${tierColor[t]};opacity:.4"></b>2025 · ${c25(t)}</span>
+      <span class="pb"><b style="width:${c26(t)/mx*66}%;background:${tierColor[t]}"></b><span style="color:var(--ink)">2026 · ${c26(t)}</span> ${delta(c25(t),c26(t))}</span>
+    </div>`).join("");
+  const seg=(n,c,l)=>n?`<span style="flex:${n};background:${c}" title="${n} ${l}">${n}</span>`:"";
+  document.getElementById("flow").innerHTML = `<div class="flowbar">${seg(upL.length,"#1f9d55","subiram")}${seg(same.length,"var(--prata)","mantiveram")}${seg(dn.length,"#d06a3a","desceram")}${seg(out.length,"#8a5560","saíram")}</div>
+    <ul class="flowlist">
+      <li><i style="background:#1f9d55"></i><span><b>${upL.length} subiram de selo</b> em 2026.</span></li>
+      <li><i style="background:var(--prata)"></i><span><b>${same.length} mantiveram</b> o mesmo selo.</span></li>
+      <li><i style="background:#d06a3a"></i><span><b>${dn.length} desceram</b> um selo, mas seguem certificáveis.</span></li>
+      <li><i style="background:#8a5560"></i><span><b>${out.length} não aparecem</b> entre as certificáveis de 2026.</span></li>
+      <li><i style="background:var(--accent)"></i><span><b>${news.length} entraram</b> na lista em 2026, sendo ${news.filter(r=>r.uf==="PI").length} no Piauí.</span></li>
+    </ul>`;
+  const li=(n,mv,dv)=>`<li><span>${esc(n)}</span><span class="dv num">${dv}</span><span class="mv">${mv}</span></li>`;
+  const sortD=(a)=>a.sort((x,y)=>(y.b.i-y.a.i)-(x.b.i-x.a.i));
+  document.getElementById("moves").innerHTML = `
+    <div class="card"><h3>Subiram de selo · ${upL.length}</h3><p class="sub">Selo 2025 → 2026</p><ul>${sortD(upL).map(p=>li(p.a.n,`${p.a.l} → ${p.b.l}`,`<span style="color:#1a8a4a">+${fmtPt(p.b.i-p.a.i)}</span>`)).join("")}</ul></div>
+    <div class="card"><h3>Desceram ou saíram · ${dn.length+out.length}</h3><p class="sub">Atenção para o próximo ciclo</p><ul>${sortD(dn).reverse().map(p=>li(p.a.n,`${p.a.l} → ${p.b.l}`,`<span style="color:#c23b3b">${fmtPt(p.b.i-p.a.i)}</span>`)).join("")}${out.sort((x,y)=>y.i-x.i).map(r=>li(r.n,`${r.l} em 2025 · fora da lista em 2026`,`${fmt(r.i,1)}%`)).join("")}</ul></div>
+    <div class="card"><h3>Novas em 2026 · ${news.length}</h3><p class="sub">Selo 2026 e índice no ciclo anterior</p><ul>${news.sort((x,y)=>y.i-x.i).map(r=>li(r.n,`${r.uf} · ${r.l} · 2025: ${r.h[3]==null?"sem avaliação":fmt(r.h[3],1)+"%"}`,`${fmt(r.i,1)}%`)).join("")}</ul></div>`;
+})();
+
+/* RANKING */
+(function(){
+  const m = {};
+  rows.forEach(r=>{const k=r.e||"Não identificado"; (m[k]??={n:k,t:{Diamante:0,Ouro:0,Prata:0},uf:new Set(),c:0}); m[k].t[r.l]++; m[k].uf.add(r.uf); m[k].c++;});
+  const list = Object.values(m).sort((a,b)=>b.c-a.c).slice(0,10), max=list[0].c;
+  document.getElementById("rank").innerHTML = list.map((v,i)=>`
+    <div class="rrow ${/workcenter/i.test(v.n)?"wc":""}">
+      <span class="pos num">${String(i+1).padStart(2,"0")}</span>
+      <span class="name">${esc(v.n)}${v.uf.size===2 && !/própria/i.test(v.n)?'<span class="both">PI+MA</span>':''}</span>
+      <span class="bars" style="width:${v.c/max*100}%">${tiers.map(t=>v.t[t]?`<b style="flex:${v.t[t]};background:${tierColor[t]}" title="${v.t[t]} ${t}"></b>`:"").join("")}</span>
+      <span class="val num">${v.c} · ${fmt(v.c/rows.length,0)}%</span>
+    </div>`).join("");
+})();
+
+/* CHART */
+(function(){
+  const years=[2022,2023,2024,2025,2026];
+  const series=(g)=>years.map((y,i)=>{const v=g.map(r=>r.h[i]).filter(x=>x!=null);return avg(v)});
+  const sw=series(W), so=series(O);
+  const Wd=620,H=280,L=44,Rr=24,T=18,B=34, lo=0.5, hi=1.0;
+  const x=i=>L+i*(Wd-L-Rr)/(years.length-1), y=v=>T+(hi-v)/(hi-lo)*(H-T-B);
+  let s=`<svg viewBox="0 0 ${Wd} ${H}" role="img" aria-label="Índice médio por ciclo, Workcenter e demais">`;
+  [0.5,0.6,0.7,0.8,0.9,1.0].forEach(v=>{s+=`<line x1="${L}" x2="${Wd-Rr}" y1="${y(v)}" y2="${y(v)}" stroke="var(--line)"/><text x="${L-8}" y="${y(v)+4}" text-anchor="end" font-size="11" fill="var(--muted)" font-family="JetBrains Mono, monospace">${v*100}%</text>`});
+  years.forEach((yr,i)=>s+=`<text x="${x(i)}" y="${H-10}" text-anchor="middle" font-size="12" fill="var(--muted)" font-family="JetBrains Mono, monospace">${yr}</text>`);
+  const path=a=>a.map((v,i)=>`${i?"L":"M"}${x(i)},${y(v)}`).join("");
+  s+=`<path d="${path(sw)}L${x(4)},${y(lo)}L${x(0)},${y(lo)}Z" fill="var(--accent)" opacity=".10"/>`;
+  s+=`<path d="${path(so)}" fill="none" stroke="var(--prata)" stroke-width="2.5" stroke-dasharray="5 5"/>`;
+  s+=`<path d="${path(sw)}" fill="none" stroke="var(--accent)" stroke-width="3.5" stroke-linejoin="round"/>`;
+  sw.forEach((v,i)=>{const last=i===4; s+=`<circle cx="${x(i)}" cy="${y(v)}" r="${last?7:4}" fill="${last?"var(--accent)":"var(--panel)"}" stroke="var(--accent)" stroke-width="2.5"/>`;
+    s+=`<text x="${x(i)}" y="${y(v)-(i===1?-22:14)}" text-anchor="middle" font-size="12" font-weight="600" fill="var(--accent)" font-family="JetBrains Mono, monospace">${fmt(v)}</text>`});
+  so.forEach((v,i)=>{s+=`<circle cx="${x(i)}" cy="${y(v)}" r="3" fill="var(--prata)"/>`; if(i===4) s+=`<text x="${x(i)-10}" y="${y(v)-10}" text-anchor="end" font-size="12" fill="var(--muted)" font-family="JetBrains Mono, monospace">${fmt(v)}</text>`});
+  document.getElementById("chart").innerHTML=s+"</svg>";
+})();
+
+/* PIPELINE */
+(function(){
+  const near = W.map(r=>{const tgt=r.l==="Prata"?0.85:r.l==="Ouro"?0.95:null; return tgt?{...r,tgt,gap:tgt-r.i}:null})
+    .filter(r=>r && r.gap<=0.015).sort((a,b)=>a.gap-b.gap);
+  document.getElementById("pipe").innerHTML = near.map(r=>`<li><span class="pn">${esc(r.n)}</span><span class="pv num">${fmt(r.i,2)}%</span>
+    <span class="pm">${r.uf} · ${r.l} → ${r.tgt===0.95?"Diamante":"Ouro"} · <span class="gap">faltam ${fmt(r.gap,2)} pt</span></span></li>`).join("");
+  const prata = W.filter(r=>r.l==="Prata");
+  document.getElementById("ctaText").textContent =
+    `${prata.length} entidades Workcenter estão no selo Prata. ${near.filter(r=>r.l==="Prata").length} delas ficam a menos de 1,5 ponto do Ouro. Revisar os critérios em que elas não pontuaram é o caminho mais curto para mudar o selo no próximo ciclo.`;
+  document.getElementById("copyPrata").onclick = ()=>copy(["Entidade\tUF\tÍndice 2026\tSite", ...prata.sort((a,b)=>b.i-a.i).map(r=>`${r.n}\t${r.uf}\t${fmt(r.i,2)}%\t${r.s}`)].join("\n"), `${prata.length} entidades copiadas`);
+})();
+
+/* TABELA */
+const st={onlyW:true,uf:"",lvl:"",q:"",k:"i",dir:-1};
+function spark(h){
+  const v=h.map(x=>x==null?null:x), w=96,hh=26; const pts=v.map((x,i)=>x==null?null:[4+i*(w-8)/4, hh-3-(x)*(hh-6)]);
+  let d="",started=false; pts.forEach(p=>{if(!p){started=false;return} d+=(started?"L":"M")+p[0].toFixed(1)+","+p[1].toFixed(1); started=true});
+  const last=pts[4];
+  return `<svg class="spark" width="${w}" height="${hh}" viewBox="0 0 ${w} ${hh}" aria-hidden="true"><path d="${d}" fill="none" stroke="var(--muted)" stroke-width="1.5"/>${last?`<circle cx="${last[0]}" cy="${last[1]}" r="2.6" fill="var(--accent)"/>`:""}</svg>`;
+}
+function filtered(){
+  const q=st.q.normalize("NFD").replace(/\p{Diacritic}/gu,"").toLowerCase();
+  return rows.filter(r=>(!st.onlyW||isW(r))&&(!st.uf||r.uf===st.uf)&&(!st.lvl||r.l===st.lvl)&&
+    (!q||(r.n+" "+r.m).normalize("NFD").replace(/\p{Diacritic}/gu,"").toLowerCase().includes(q)))
+    .sort((a,b)=>{const A=a[st.k],B=b[st.k]; return (typeof A==="number"?A-B:String(A).localeCompare(String(B),"pt"))*st.dir});
+}
+function render(){
+  const f=filtered();
+  document.getElementById("count").textContent=`${f.length} entidade${f.length===1?"":"s"}`;
+  document.getElementById("tbody").innerHTML=f.map(r=>`<tr>
+    <td><strong>${esc(r.n)}</strong><div class="vend">${esc(r.m)} · ${esc(r.p)}</div></td>
+    <td>${r.uf}</td><td><span class="pill ${r.l}">${r.l}</span></td>
+    <td class="r num">${fmt(r.i,2)}%</td><td>${spark(r.h)}</td>
+    <td class="vend ${isW(r)?"isw":""}">${esc(r.e||"Não identificado")}</td>
+    <td><a href="${esc(r.s)}">${esc(String(r.s).replace(/^https?:\/\//,"").replace(/\/$/,""))}</a></td></tr>`).join("") ||
+    `<tr><td colspan="7" style="text-align:center;color:var(--muted);padding:28px">Nenhuma entidade com esses filtros. Limpe a busca ou troque o selo.</td></tr>`;
+  document.querySelectorAll("th[data-k]").forEach(th=>th.setAttribute("aria-sort",th.dataset.k===st.k?(st.dir>0?"ascending":"descending"):"none"));
+}
+const fW=document.getElementById("fW"), fA=document.getElementById("fA");
+fW.onclick=()=>{st.onlyW=true;fW.setAttribute("aria-pressed","true");fA.setAttribute("aria-pressed","false");render()};
+fA.onclick=()=>{st.onlyW=false;fA.setAttribute("aria-pressed","true");fW.setAttribute("aria-pressed","false");render()};
+document.querySelectorAll("[data-uf]").forEach(b=>b.onclick=()=>{st.uf=b.dataset.uf;document.querySelectorAll("[data-uf]").forEach(x=>x.setAttribute("aria-pressed",x===b?"true":"false"));render()});
+document.getElementById("fN").onchange=e=>{st.lvl=e.target.value;render()};
+document.getElementById("fQ").oninput=e=>{st.q=e.target.value;render()};
+document.querySelectorAll("th[data-k]").forEach(th=>th.onclick=()=>{const k=th.dataset.k; st.dir = st.k===k? -st.dir : (k==="i"?-1:1); st.k=k; render()});
+function copy(text,msg){
+  const t=document.getElementById("toast");
+  const done=ok=>{t.textContent=ok?msg:"Não foi possível copiar neste navegador";t.classList.add("on");setTimeout(()=>t.classList.remove("on"),2200)};
+  try{navigator.clipboard.writeText(text).then(()=>done(true),()=>done(false))}catch(e){done(false)}
+}
+document.getElementById("copy").onclick=()=>{const f=filtered();copy(["Entidade\tUF\tMunicípio\tSelo\tÍndice 2026\tEmpresa\tSite",...f.map(r=>`${r.n}\t${r.uf}\t${r.m}\t${r.l}\t${fmt(r.i,2)}%\t${r.e}\t${r.s}`)].join("\n"),`${f.length} linhas copiadas`)};
+render();
+</script>
+</body>
+</html>
