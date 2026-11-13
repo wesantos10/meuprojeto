@@ -101,7 +101,8 @@ svg :focus{outline:none}
 .seal.has-sel .arc{opacity:.25}.seal.has-sel .arc.sel{opacity:1;stroke-width:32}
 @keyframes draw{from{stroke-dashoffset:var(--len)}to{stroke-dashoffset:0}}
 .arc{stroke-dashoffset:var(--len)}
-body.ready .arc{animation:draw 1.8s cubic-bezier(.4,0,.2,1) both}
+.seal svg{animation:sealIn 1.2s ease both}
+@keyframes sealIn{from{opacity:0}}
 
 /* SECTIONS */
 section{padding:60px 0;border-top:1px solid var(--line);position:relative}
@@ -188,7 +189,11 @@ section{padding:60px 0;border-top:1px solid var(--line);position:relative}
 .flowlist li{display:flex;gap:10px;align-items:flex-start}
 .flowlist i{width:12px;height:12px;border-radius:3px;margin-top:5px;flex:none}
 .moves{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:14px}
-.moves .card ul{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;max-height:360px;overflow:auto}
+.moves .card ul{list-style:none;margin:0 -8px 0 0;padding:0 18px 0 0;display:flex;flex-direction:column;max-height:360px;overflow:auto}
+.moves .card ul,.db,.tablebox{scrollbar-width:thin;scrollbar-color:color-mix(in srgb,var(--accent) 45%,var(--line)) transparent}
+.moves .card ul::-webkit-scrollbar,.db::-webkit-scrollbar,.tablebox::-webkit-scrollbar{width:6px;height:6px}
+.moves .card ul::-webkit-scrollbar-thumb,.db::-webkit-scrollbar-thumb,.tablebox::-webkit-scrollbar-thumb{background:color-mix(in srgb,var(--accent) 45%,var(--line));border-radius:999px}
+.moves .card ul::-webkit-scrollbar-track,.db::-webkit-scrollbar-track{background:transparent}
 .moves .card li{display:grid;grid-template-columns:1fr auto;gap:2px 10px;padding:9px 0;border-bottom:1px solid var(--line);font-size:14px}
 .moves .card li:last-child{border-bottom:0}
 .moves .mv{font:500 12.5px var(--f-mono);color:var(--muted)}
@@ -198,7 +203,7 @@ section{padding:60px 0;border-top:1px solid var(--line);position:relative}
 /* DUMBBELL 2025 x 2026 */
 .db-head{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;flex-wrap:wrap}
 .db-legend{margin:4px 0 12px}
-.db{display:flex;flex-direction:column;max-height:620px;overflow:auto;padding-right:4px}
+.db{display:flex;flex-direction:column;max-height:620px;overflow:auto;padding-right:18px}
 .db-axis,.db-row{display:grid;grid-template-columns:minmax(150px,280px) 1fr 74px;gap:14px;align-items:center}
 .db-axis{position:sticky;top:0;background:var(--panel);z-index:2;padding:4px 0 8px;font:600 11px var(--f-mono);color:var(--muted)}
 .db-axis .scale{position:relative;height:16px}
@@ -389,7 +394,7 @@ footer .fine{color:var(--muted);font-size:13px;max-width:50ch}
         <div><h3 id="dbTitle">Todas as entidades Workcenter: 2025 → 2026</h3><p class="sub" id="dbSub">Índice de cada entidade no ciclo 2025 e no ciclo 2026</p></div>
         <div class="seg" role="group" aria-label="Ordenar" id="dbSort"><button data-s="i" aria-pressed="true">Índice 2026</button><button data-s="d" aria-pressed="false">Maior avanço</button><button data-s="n" aria-pressed="false">Nome</button></div>
       </div>
-      <div class="db-legend legend"><span><i style="background:var(--prata);border-radius:50%"></i>2025</span><span><i style="background:var(--accent);border-radius:50%"></i>2026</span><span><i style="background:var(--good)"></i>subiu</span><span><i style="background:var(--bad)"></i>caiu</span><span><i style="background:none;border-left:2px dashed var(--accent);border-radius:0;width:2px;height:12px"></i>média geral 2026</span></div>
+      <div class="db-legend legend"><span><i style="background:var(--prata);border-radius:50%"></i>2025</span><span><i style="background:var(--accent);border-radius:50%"></i>2026</span><span><i style="background:var(--good)"></i>subiu</span><span><i style="background:var(--bad)"></i>caiu</span></div>
       <div class="db" id="db"></div>
     </div>
   </div>
@@ -559,7 +564,7 @@ function renderHero(){
       <circle cx="200" cy="200" r="${R}" fill="none" stroke="var(--line)" stroke-width="22"/>`;
     TIERS.forEach((t,i)=>{ const len=C*tc[t]/W.length-gap;
       h+=`<circle class="arc" data-t="${t}" tabindex="0" role="button" aria-label="${tc[t]} ${t}" cx="200" cy="200" r="${R}" fill="none" stroke="${TC[t]}" stroke-width="24"
-        stroke-dasharray="${len} ${C}" style="--len:${len};animation-delay:${.2+i*.2}s" transform="rotate(${-90+off/C*360} 200 200)"><title>${tc[t]} ${t}</title></circle>`;
+        stroke-dasharray="${len} ${C}" transform="rotate(${-90+off/C*360} 200 200)"><title>${tc[t]} ${t}</title></circle>`;
       off+=len+gap; });
     svg.innerHTML=h;
     svg.querySelectorAll(".arc").forEach(a=>{a.onclick=()=>setTier(a.dataset.t); a.onkeydown=e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();setTier(a.dataset.t)}}});
@@ -715,7 +720,7 @@ function renderDumbbell(){
   $("dbTitle").textContent=`${t?`Entidades Workcenter ${t}`:"Todas as entidades Workcenter"}: 2025 → 2026`;
   $("dbSub").textContent=`${list.length} entidades. ${up} subiram de índice, ${dn} caíram${na?` e ${na} não ${plural(na,"foi avaliada","foram avaliadas")} em 2025`:""}. Passe o mouse em uma linha para ver de onde saiu e aonde chegou. A linha ciano marca os 95% do Diamante.`;
   const ticks=[40,50,60,70,80,90,100];
-  const th=[75,85,95].map(v=>`<span class="th ${v===95?"dia":""}" style="left:${pctX(v/100)}%"></span>`).join("")+(gm?`<span class="th mean" style="left:${pctX(gm.i)}%"></span>`:"");
+  const th=[75,85,95].map(v=>`<span class="th ${v===95?"dia":""}" style="left:${pctX(v/100)}%"></span>`).join("");
   const row=r=>{const a=r.a??r.i;
     const tip=`${r.n}\n${r.a==null?"2025: sem avaliação":`2025: ${fmt(r.a,2)}%`}  →  2026: ${fmt(r.i,2)}%${r.d==null?"":`\nVariação: ${pt(r.d)} pt`}`;
     return `<div class="db-row ${r.avg?"avg":""}" data-tt="${esc(tip)}">
@@ -727,7 +732,7 @@ function renderDumbbell(){
       </span>
       <span class="dv ${r.d==null?"na":r.d>=0?"up":"down"}">${r.d==null?"novo":pt(r.d)}</span></div>`};
   $("db").innerHTML=`<div class="db-axis"><span>Entidade</span><span class="scale">${ticks.map(v=>`<span style="left:${pctX(v/100)}%">${v}%</span>`).join("")}</span><span style="text-align:right">Variação</span></div>`+
-    means.map(row).join("")+list.map(row).join("");
+    list.map(row).join("");
   if(dbSeen) setTimeout(animateDb,60);
 }
 if("IntersectionObserver" in window) new IntersectionObserver((es,io)=>{if(es[0].isIntersecting){dbSeen=true;animateDb();io.disconnect()}},{threshold:.05}).observe($("db")); else dbSeen=true;
