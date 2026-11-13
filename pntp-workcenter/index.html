@@ -146,6 +146,12 @@ section{padding:56px 0;border-top:1px solid var(--line)}
 .rrow .name{font-weight:600;font-size:15px}
 .rrow .bars{display:flex;height:22px;border-radius:6px;overflow:hidden;background:color-mix(in srgb,var(--line) 50%,transparent)}
 .rrow .bars b{height:100%;display:block;transition:filter .2s}
+.rrow .bars{overflow:visible}
+.rrow .bars b{position:relative;cursor:default}
+.rrow .bars b:first-child{border-radius:6px 0 0 6px}.rrow .bars b:last-child{border-radius:0 6px 6px 0}
+.rrow .bars b:hover,.rrow .bars b:focus-visible{filter:brightness(1.12);outline:none}
+.rrow .bars b::after{content:attr(data-tip);position:absolute;bottom:calc(100% + 8px);left:50%;transform:translate(-50%,4px);background:var(--ink);color:var(--paper);font:600 12.5px var(--f-body);padding:6px 10px;border-radius:8px;white-space:nowrap;opacity:0;pointer-events:none;transition:.15s;z-index:5}
+.rrow .bars b:hover::after,.rrow .bars b:focus-visible::after{opacity:1;transform:translate(-50%,0)}
 .rrow .val{font:600 14px var(--f-mono);text-align:right;color:var(--muted)}
 .rrow.wc .name{color:var(--accent)}
 .rrow.wc{background:linear-gradient(90deg,var(--accent-soft),transparent 70%);margin:0 -22px;padding-left:22px;padding-right:22px;border-radius:12px}
@@ -202,7 +208,7 @@ td a{word-break:break-all;font-size:13px}
 .cta::after{content:"";position:absolute;right:-90px;bottom:-90px;width:260px;height:260px;border-radius:50%;border:26px solid color-mix(in srgb,var(--ouro) 60%,transparent);opacity:.35}
 
 /* MÉTODO + FOOTER */
-.method{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.method{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}
 .method .card p{margin:0;color:var(--muted);font-size:14.5px}
 .method .card b{display:block;font:600 12px var(--f-mono);letter-spacing:.08em;text-transform:uppercase;color:var(--accent);margin-bottom:8px}
 footer{border-top:1px solid var(--line);padding:40px 0 56px;margin-top:56px}
@@ -226,7 +232,7 @@ footer .fine{color:var(--muted);font-size:13px;max-width:50ch}
 <body>
 <nav aria-label="Seções">
   <div class="wrap">
-    <a class="brand" href="#topo"><span class="dot" aria-hidden="true"></span>PNTP 2026 · PI + MA</a>
+    <a class="brand" href="#topo"><span class="dot" aria-hidden="true"></span>Workcenter</a>
     <div class="navlinks">
       <a href="#workcenter">Workcenter</a>
       <a href="#comparativo">2025 × 2026</a>
@@ -293,7 +299,7 @@ footer .fine{color:var(--muted);font-size:13px;max-width:50ch}
   <div class="wrap">
     <div class="sec-head">
       <h2>Quem faz os portais certificáveis</h2>
-      <p>Entidades certificáveis por empresa, somando PI e MA. A barra mostra o selo de cada uma. A marca <span class="both">PI+MA</span> indica presença nos dois estados.</p>
+      <p>Entidades certificáveis por empresa, somando PI e MA. A barra mostra o selo de cada uma. Passe o mouse sobre um trecho para ver a quantidade.</p>
     </div>
     <div class="rank" id="rank"></div>
     <div class="legend" style="margin-top:14px">
@@ -321,8 +327,8 @@ footer .fine{color:var(--muted);font-size:13px;max-width:50ch}
         </div>
       </div>
       <div class="card">
-        <h3>Perto do próximo selo</h3>
-        <p class="sub">Entidades Workcenter a menos de 1,5 ponto do selo seguinte (Ouro a partir de 85%, Diamante a partir de 95%)</p>
+        <h3>Mais perto do Diamante</h3>
+        <p class="sub">Entidades Workcenter Ouro com o menor caminho até os 95% do Diamante</p>
         <ul class="pipe" id="pipe"></ul>
       </div>
     </div>
@@ -336,10 +342,7 @@ footer .fine{color:var(--muted);font-size:13px;max-width:50ch}
       <p>Filtre por estado, selo e empresa. Clique no título de uma coluna para ordenar.</p>
     </div>
     <div class="controls">
-      <div class="seg" role="group" aria-label="Empresa">
-        <button id="fW" aria-pressed="true">Só Workcenter</button>
-        <button id="fA" aria-pressed="false">Todas as empresas</button>
-      </div>
+      <select id="fE" aria-label="Empresa"></select>
       <div class="seg" role="group" aria-label="Estado">
         <button data-uf="" aria-pressed="true">PI + MA</button>
         <button data-uf="PI" aria-pressed="false">Piauí</button>
@@ -368,12 +371,12 @@ footer .fine{color:var(--muted);font-size:13px;max-width:50ch}
   <div class="wrap">
     <div class="cta">
       <div>
-        <h2>Próximo passo: levar as Prata para Ouro.</h2>
+        <h2>Próximo passo: levar as Ouro para Diamante.</h2>
         <p id="ctaText"></p>
       </div>
       <div class="actions">
         <a class="btn" href="https://radardatransparencia.atricon.org.br/painel-6/">Abrir o painel do Radar</a>
-        <button class="btn ghost" id="copyPrata">Copiar lista das Prata Workcenter</button>
+        <button class="btn ghost" id="copyPrata">Copiar lista das Ouro Workcenter</button>
       </div>
     </div>
   </div>
@@ -384,8 +387,7 @@ footer .fine{color:var(--muted);font-size:13px;max-width:50ch}
     <div class="sec-head"><h2>Como os números foram feitos</h2></div>
     <div class="method">
       <div class="card"><b>Fonte</b><p>Painel 6 do Radar da Transparência Pública (Atricon), ciclo 2026, com os filtros por UF e "só certificáveis". São 32 entidades no Piauí e 174 no Maranhão.</p></div>
-      <div class="card"><b>Empresa</b><p>Cada portal foi aberto e a empresa foi identificada pelo crédito no rodapé ou por marcas técnicas da plataforma. Depois, a lista foi revisada manualmente.</p></div>
-      <div class="card"><b>Selos</b><p>Certificável é a entidade que atende 100% dos critérios essenciais. O selo depende do índice: Diamante a partir de 95%, Ouro a partir de 85% e Prata a partir de 75%.</p></div>
+            <div class="card"><b>Selos</b><p>Certificável é a entidade que atende 100% dos critérios essenciais. O selo depende do índice: Diamante a partir de 95%, Ouro a partir de 85% e Prata a partir de 75%.</p></div>
     </div>
   </div>
 </section>
@@ -393,7 +395,7 @@ footer .fine{color:var(--muted);font-size:13px;max-width:50ch}
 <footer>
   <div class="wrap">
     <div>
-      <a class="brand" href="#topo"><span class="dot" aria-hidden="true"></span>PNTP 2026 · PI + MA</a>
+      <a class="brand" href="#topo"><span class="dot" aria-hidden="true"></span>Workcenter</a>
       <p class="fine" style="margin-top:12px">Levantamento feito em novembro de 2026 a partir de dados públicos do Radar da Transparência. Os índices são os do ciclo 2026 publicados no painel.</p>
     </div>
     <div><h4>Seções</h4><ul><li><a href="#workcenter">Workcenter</a></li><li><a href="#fornecedores">Fornecedores</a></li><li><a href="#evolucao">Evolução</a></li><li><a href="#entidades">Entidades</a></li></ul></div>
@@ -420,7 +422,7 @@ const esc = s => String(s??"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">"
 const tc = Object.fromEntries(tiers.map(t=>[t,cnt(W,r=>r.l===t)]));
 document.getElementById("sealNum").textContent = W.length;
 document.getElementById("lede").textContent =
-  `São ${W.length} das ${rows.length} entidades certificáveis: ${wUF("MA").length} no Maranhão e ${wUF("PI").length} no Piauí. Entre as empresas que atendem os dois estados, a Workcenter é a que tem mais entidades certificáveis.`;
+  `São ${W.length} das ${rows.length} entidades certificáveis: ${wUF("MA").length} no Maranhão e ${wUF("PI").length} no Piauí. É a segunda empresa com mais entidades certificáveis nos dois estados somados.`;
 document.getElementById("heroChips").innerHTML = tiers.map(t=>`<span class="chip"><i style="background:${tierColor[t]}"></i>${tc[t]} ${t}</span>`).join("")
   + `<span class="chip">${cnt(W,r=>r.p==="Legislativo")} câmaras · ${cnt(W,r=>r.p==="Executivo")} prefeituras</span>`;
 (function seal(){
@@ -536,8 +538,8 @@ document.getElementById("bento").innerHTML = `
   document.getElementById("rank").innerHTML = list.map((v,i)=>`
     <div class="rrow ${/workcenter/i.test(v.n)?"wc":""}">
       <span class="pos num">${String(i+1).padStart(2,"0")}</span>
-      <span class="name">${esc(v.n)}${v.uf.size===2 && !/própria/i.test(v.n)?'<span class="both">PI+MA</span>':''}</span>
-      <span class="bars" style="width:${v.c/max*100}%">${tiers.map(t=>v.t[t]?`<b style="flex:${v.t[t]};background:${tierColor[t]}" title="${v.t[t]} ${t}"></b>`:"").join("")}</span>
+      <span class="name">${esc(v.n)}</span>
+      <span class="bars" style="width:${v.c/max*100}%">${tiers.map(t=>v.t[t]?`<b tabindex="0" style="flex:${v.t[t]};background:${tierColor[t]}" data-tip="${v.t[t]} ${t} · ${fmt(v.t[t]/v.c,0)}% das ${v.c}" aria-label="${v.t[t]} ${t}"></b>`:"").join("")}</span>
       <span class="val num">${v.c} · ${fmt(v.c/rows.length,0)}%</span>
     </div>`).join("");
 })();
@@ -564,18 +566,18 @@ document.getElementById("bento").innerHTML = `
 
 /* PIPELINE */
 (function(){
-  const near = W.map(r=>{const tgt=r.l==="Prata"?0.85:r.l==="Ouro"?0.95:null; return tgt?{...r,tgt,gap:tgt-r.i}:null})
-    .filter(r=>r && r.gap<=0.015).sort((a,b)=>a.gap-b.gap);
-  document.getElementById("pipe").innerHTML = near.map(r=>`<li><span class="pn">${esc(r.n)}</span><span class="pv num">${fmt(r.i,2)}%</span>
-    <span class="pm">${r.uf} · ${r.l} → ${r.tgt===0.95?"Diamante":"Ouro"} · <span class="gap">faltam ${fmt(r.gap,2)} pt</span></span></li>`).join("");
+  const ouro = W.filter(r=>r.l==="Ouro").map(r=>({...r,gap:0.95-r.i})).sort((a,b)=>a.gap-b.gap);
   const prata = W.filter(r=>r.l==="Prata");
+  document.getElementById("pipe").innerHTML = ouro.slice(0,6).map(r=>`<li><span class="pn">${esc(r.n)}</span><span class="pv num">${fmt(r.i,2)}%</span>
+    <span class="pm">${r.uf} · Ouro → Diamante · <span class="gap">faltam ${fmt(r.gap,2)} pt</span></span></li>`).join("");
+  const n3 = ouro.filter(r=>r.gap<=0.03).length, n5 = ouro.filter(r=>r.gap<=0.05).length;
   document.getElementById("ctaText").textContent =
-    `${prata.length} entidades Workcenter estão no selo Prata. ${near.filter(r=>r.l==="Prata").length} delas ficam a menos de 1,5 ponto do Ouro. Revisar os critérios em que elas não pontuaram é o caminho mais curto para mudar o selo no próximo ciclo.`;
-  document.getElementById("copyPrata").onclick = ()=>copy(["Entidade\tUF\tÍndice 2026\tSite", ...prata.sort((a,b)=>b.i-a.i).map(r=>`${r.n}\t${r.uf}\t${fmt(r.i,2)}%\t${r.s}`)].join("\n"), `${prata.length} entidades copiadas`);
+    `${ouro.length} entidades Workcenter estão no selo Ouro. ${n3} ficam a até 3 pontos do Diamante e ${n5} a até 5 pontos. Revisar os critérios em que elas não pontuaram é o caminho mais curto para mudar o selo no próximo ciclo. Na sequência vêm as ${prata.length} Prata, que podem subir para Ouro.`;
+  document.getElementById("copyPrata").onclick = ()=>copy(["Entidade\tUF\tÍndice 2026\tFaltam para Diamante\tSite", ...ouro.map(r=>`${r.n}\t${r.uf}\t${fmt(r.i,2)}%\t${fmt(r.gap,2)} pt\t${r.s}`)].join("\n"), `${ouro.length} entidades copiadas`);
 })();
 
 /* TABELA */
-const st={onlyW:true,uf:"",lvl:"",q:"",k:"i",dir:-1};
+const st={emp:"",uf:"",lvl:"",q:"",k:"i",dir:-1};
 function spark(h){
   const v=h.map(x=>x==null?null:x), w=96,hh=26; const pts=v.map((x,i)=>x==null?null:[4+i*(w-8)/4, hh-3-(x)*(hh-6)]);
   let d="",started=false; pts.forEach(p=>{if(!p){started=false;return} d+=(started?"L":"M")+p[0].toFixed(1)+","+p[1].toFixed(1); started=true});
@@ -584,7 +586,7 @@ function spark(h){
 }
 function filtered(){
   const q=st.q.normalize("NFD").replace(/\p{Diacritic}/gu,"").toLowerCase();
-  return rows.filter(r=>(!st.onlyW||isW(r))&&(!st.uf||r.uf===st.uf)&&(!st.lvl||r.l===st.lvl)&&
+  return rows.filter(r=>(!st.emp||(r.e||"Não identificado")===st.emp)&&(!st.uf||r.uf===st.uf)&&(!st.lvl||r.l===st.lvl)&&
     (!q||(r.n+" "+r.m).normalize("NFD").replace(/\p{Diacritic}/gu,"").toLowerCase().includes(q)))
     .sort((a,b)=>{const A=a[st.k],B=b[st.k]; return (typeof A==="number"?A-B:String(A).localeCompare(String(B),"pt"))*st.dir});
 }
@@ -600,9 +602,13 @@ function render(){
     `<tr><td colspan="7" style="text-align:center;color:var(--muted);padding:28px">Nenhuma entidade com esses filtros. Limpe a busca ou troque o selo.</td></tr>`;
   document.querySelectorAll("th[data-k]").forEach(th=>th.setAttribute("aria-sort",th.dataset.k===st.k?(st.dir>0?"ascending":"descending"):"none"));
 }
-const fW=document.getElementById("fW"), fA=document.getElementById("fA");
-fW.onclick=()=>{st.onlyW=true;fW.setAttribute("aria-pressed","true");fA.setAttribute("aria-pressed","false");render()};
-fA.onclick=()=>{st.onlyW=false;fA.setAttribute("aria-pressed","true");fW.setAttribute("aria-pressed","false");render()};
+const fE=document.getElementById("fE");
+(function(){const c={};rows.forEach(r=>{const k=r.e||"Não identificado";c[k]=(c[k]||0)+1});
+  const wk=Object.keys(c).find(k=>/workcenter/i.test(k));
+  fE.innerHTML=`<option value="${esc(wk)}">${esc(wk)} (${c[wk]})</option><option value="">Todas as empresas (${rows.length})</option>`+
+    Object.entries(c).filter(([k])=>k!==wk).sort((a,b)=>b[1]-a[1]||a[0].localeCompare(b[0],"pt")).map(([k,n])=>`<option value="${esc(k)}">${esc(k)} (${n})</option>`).join("");
+  fE.value=wk; st.emp=wk;})();
+fE.onchange=e=>{st.emp=e.target.value;render()};
 document.querySelectorAll("[data-uf]").forEach(b=>b.onclick=()=>{st.uf=b.dataset.uf;document.querySelectorAll("[data-uf]").forEach(x=>x.setAttribute("aria-pressed",x===b?"true":"false"));render()});
 document.getElementById("fN").onchange=e=>{st.lvl=e.target.value;render()};
 document.getElementById("fQ").oninput=e=>{st.q=e.target.value;render()};
